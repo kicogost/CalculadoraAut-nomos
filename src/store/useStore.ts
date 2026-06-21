@@ -10,6 +10,7 @@ import type {
 import type { Factura, IssuerProfile } from '../types/factura';
 import { EMPTY_ISSUER } from '../types/factura';
 import { facturaToInvoiceFields } from '../lib/factura';
+import type { DraftEntry } from '../types/reader';
 
 export type Screen =
   | 'dashboard'
@@ -17,6 +18,7 @@ export type Screen =
   | 'expenses'
   | 'taxes'
   | 'facturas'
+  | 'importar'
   | 'profile'
   | 'settings';
 
@@ -59,6 +61,9 @@ interface StoreState {
   addExpense: (exp: Omit<Expense, 'id'>) => Promise<void>;
   updateExpense: (exp: Expense) => Promise<void>;
   deleteExpense: (id: string) => Promise<void>;
+
+  /** Commit reviewed draft entries (from CSV/AI readers) as invoices/expenses. */
+  importDrafts: (drafts: DraftEntry[]) => Promise<{ income: number; expenses: number }>;
 
   upsertProfile: (profile: YearProfile) => Promise<void>;
   setActiveYear: (year: number) => Promise<void>;
@@ -151,6 +156,43 @@ export const useStore = create<StoreState>((set, get) => ({
   async deleteExpense(id) {
     await db.expenses.delete(id);
     set({ expenses: get().expenses.filter((e) => e.id !== id) });
+  },
+
+  async importDrafts(drafts) {
+    const included = drafts.filter((d) => d.include);
+    const newInvoices: Invoice[] = [];
+    const newExpenses: Expense[] = [];
+    for (const d of included) {
+      if (d.kind === 'income') {
+        newInvoices.push({
+          id: newId(),
+          date: d.date,
+          clientName: d.description || 'Cliente',
+          amountCents: d.amountCents,
+          placeOfSupply: d.placeOfSupply ?? 'domestic_es',
+          ivaRate: d.ivaRate ?? 0,
+          retencionRate: d.retencionRate ?? 0,
+          notes: 'Importado',
+        });
+      } else {
+        newExpenses.push({
+          id: newId(),
+          date: d.date,
+          category: d.category || 'Otros',
+          amountCents: d.amountCents,
+          deductiblePct: d.deductiblePct ?? 100,
+          inputIvaCents: d.inputIvaCents ?? 0,
+          notes: 'Importado',
+        });
+      }
+    }
+    if (newInvoices.length) await db.invoices.bulkAdd(newInvoices);
+    if (newExpenses.length) await db.expenses.bulkAdd(newExpenses);
+    set({
+      invoices: [...get().invoices, ...newInvoices],
+      expenses: [...get().expenses, ...newExpenses],
+    });
+    return { income: newInvoices.length, expenses: newExpenses.length };
   },
 
   async upsertProfile(profile) {

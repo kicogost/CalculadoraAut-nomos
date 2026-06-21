@@ -5,6 +5,7 @@ import { IncomeScreen } from './screens/Income';
 import { ExpensesScreen } from './screens/Expenses';
 import { TaxesScreen } from './screens/Taxes';
 import { FacturasScreen } from './screens/Facturas';
+import { ImportarScreen } from './screens/Importar';
 import { ProfileScreen } from './screens/Profile';
 import { SettingsScreen } from './screens/Settings';
 import { Onboarding } from './screens/Onboarding';
@@ -17,6 +18,7 @@ const NAV: { id: Screen; label: string; icon: string }[] = [
   { id: 'expenses', label: 'Gastos', icon: '↓' },
   { id: 'taxes', label: 'Impuestos', icon: '§' },
   { id: 'facturas', label: 'Facturas', icon: '▦' },
+  { id: 'importar', label: 'Lector', icon: '⤓' },
   { id: 'profile', label: 'Año y perfil', icon: '⚙' },
   { id: 'settings', label: 'Datos', icon: '↻' },
 ];
@@ -83,19 +85,20 @@ export function App() {
         {screen === 'expenses' && <ExpensesScreen />}
         {screen === 'taxes' && <TaxesScreen />}
         {screen === 'facturas' && <FacturasScreen />}
+        {screen === 'importar' && <ImportarScreen />}
         {screen === 'profile' && <ProfileScreen />}
         {screen === 'settings' && <SettingsScreen />}
         <Disclaimer />
       </main>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed inset-x-0 bottom-0 z-10 flex justify-around border-t border-border bg-surface/95 backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-10 flex overflow-x-auto border-t border-border bg-surface/95 backdrop-blur md:hidden">
         {NAV.map((n) => (
           <button
             key={n.id}
             onClick={() => setScreen(n.id)}
             className={cx(
-              'flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium',
+              'flex min-w-[4.25rem] flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium',
               screen === n.id ? 'text-accent' : 'text-muted',
             )}
           >

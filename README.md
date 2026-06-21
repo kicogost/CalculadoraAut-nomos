@@ -15,6 +15,17 @@ Sirve a dos perfiles desde el mismo código:
 El ingreso se modela **a nivel de factura** con su tipo de cliente / lugar de prestación, así que
 un mismo usuario puede mezclar ingresos de exportación y domésticos.
 
+## Funciones principales
+
+- **Resumen / Ingresos / Gastos / Impuestos** — el motor de cálculo y el número estrella
+  («aparta esto cada mes»).
+- **Facturas** — generador de facturas/proformas en PDF (borrador, sin Verifactu); puede volcar la
+  factura a ingresos para que entre en el cálculo.
+- **Lector** — importa movimientos desde un **CSV del banco** (100% local, con mapeo de columnas) o
+  extrae datos de **facturas/tickets en PDF con IA**, con pantalla de revisión antes de confirmar.
+  La parte de IA usa una función serverless (`/api/extract`) que llama a Claude; la clave vive en el
+  servidor.
+
 ## Arquitectura
 
 - **Motor fiscal** (`src/engine/`) — funciones **puras, sin dependencias de UI**, con tests
@@ -45,6 +56,21 @@ npm run build      # build de producción (estático)
 ## Despliegue
 
 SPA estática lista para **Vercel** (ver `vercel.json`): `npm run build` → `dist/`.
+
+### Lector con IA (función serverless)
+
+La extracción con IA vive en `api/extract.ts` (función serverless de Vercel). Para activarla:
+
+1. En Vercel: **Settings → Environment Variables** → añade `ANTHROPIC_API_KEY` (ver `.env.example`).
+   Opcional: `EXTRACT_MODEL` (por defecto `claude-haiku-4-5`; sube a `claude-sonnet-4-6` o
+   `claude-opus-4-8` para documentos más difíciles). Solo se admiten archivos **PDF**.
+2. La clave **nunca llega al navegador**: el cliente sube la imagen/PDF a `/api/extract` y este llama
+   a Claude desde el servidor.
+
+> La extracción con IA **no funciona en `npm run dev`** (Vite no sirve `/api`). Úsala en el
+> despliegue de Vercel o localmente con `vercel dev`. El importador de CSV sí es 100% local y
+> funciona siempre. Aviso de privacidad: al escanear con IA, el documento sale de tu dispositivo
+> hacia la API de Anthropic solo para ese análisis.
 
 ## Limitaciones de v1 (ver RESEARCH.md §7)
 
