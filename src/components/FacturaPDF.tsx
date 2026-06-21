@@ -1,5 +1,5 @@
 import { Document, Page, View, Text, Image, StyleSheet, pdf } from '@react-pdf/renderer';
-import { formatEur } from '../engine';
+import { formatCurrency } from '../engine';
 import type { Factura, IssuerProfile } from '../types/factura';
 import {
   DOC_TYPE_LABELS,
@@ -97,8 +97,8 @@ export function FacturaDocument({ factura, issuer }: { factura: Factura; issuer:
           <View key={l.id} style={s.tRow}>
             <Text style={s.cConcept}>{l.concept || '—'}</Text>
             <Text style={s.cQty}>{l.quantity}</Text>
-            <Text style={s.cPrice}>{formatEur(l.unitPriceCents)}</Text>
-            <Text style={s.cAmount}>{formatEur(lineAmountCents(l))}</Text>
+            <Text style={s.cPrice}>{formatCurrency(l.unitPriceCents, factura.currency)}</Text>
+            <Text style={s.cAmount}>{formatCurrency(lineAmountCents(l), factura.currency)}</Text>
           </View>
         ))}
 
@@ -106,21 +106,21 @@ export function FacturaDocument({ factura, issuer }: { factura: Factura; issuer:
         <View style={s.totals}>
           <View style={s.totalLine}>
             <Text style={s.muted}>Base imponible</Text>
-            <Text>{formatEur(t.baseCents)}</Text>
+            <Text>{formatCurrency(t.baseCents, factura.currency)}</Text>
           </View>
           <View style={s.totalLine}>
             <Text style={s.muted}>IVA ({factura.ivaRate}%)</Text>
-            <Text>{factura.ivaRate ? formatEur(t.ivaCents) : '—'}</Text>
+            <Text>{factura.ivaRate ? formatCurrency(t.ivaCents, factura.currency) : '—'}</Text>
           </View>
           {factura.retencionRate > 0 && (
             <View style={s.totalLine}>
               <Text style={s.muted}>Retención IRPF ({factura.retencionRate}%)</Text>
-              <Text>−{formatEur(t.retencionCents)}</Text>
+              <Text>−{formatCurrency(t.retencionCents, factura.currency)}</Text>
             </View>
           )}
           <View style={s.grandTotal}>
             <Text style={s.grandTotalText}>Total</Text>
-            <Text style={s.grandTotalText}>{formatEur(t.totalCents)}</Text>
+            <Text style={s.grandTotalText}>{formatCurrency(t.totalCents, factura.currency)}</Text>
           </View>
         </View>
 

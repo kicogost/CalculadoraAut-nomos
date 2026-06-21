@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { IncomeScreen } from './Income';
 import { ExpensesScreen } from './Expenses';
+import { ClientesScreen } from './Clientes';
 import { FacturasScreen as FacturaBuilder } from './Facturas';
 import { ImportarScreen } from './Importar';
 import { Button, SectionTitle, cx } from '../components/ui';
 
-type Kind = 'ingresos' | 'gastos';
+type Kind = 'ingresos' | 'gastos' | 'clientes';
 type View = 'list' | 'crear' | 'importar';
 
 /**
@@ -44,16 +45,21 @@ export function FacturasHub() {
         <div className="inline-flex rounded-xl bg-surface-2 p-1">
           <Seg active={kind === 'ingresos'} onClick={() => setKind('ingresos')}>Ingresos</Seg>
           <Seg active={kind === 'gastos'} onClick={() => setKind('gastos')}>Gastos</Seg>
+          <Seg active={kind === 'clientes'} onClick={() => setKind('clientes')}>Clientes</Seg>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button onClick={() => setView('importar')}>Leer PDF (IA) · CSV</Button>
+          {kind !== 'clientes' && (
+            <Button onClick={() => setView('importar')}>Leer PDF (IA) · CSV</Button>
+          )}
           {kind === 'ingresos' && (
             <Button variant="primary" onClick={() => setView('crear')}>Crear factura PDF</Button>
           )}
         </div>
       </div>
 
-      {kind === 'ingresos' ? <IncomeScreen embedded /> : <ExpensesScreen embedded />}
+      {kind === 'ingresos' && <IncomeScreen embedded />}
+      {kind === 'gastos' && <ExpensesScreen embedded />}
+      {kind === 'clientes' && <ClientesScreen />}
     </div>
   );
 }

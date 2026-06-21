@@ -3,8 +3,10 @@ import { useStore, useActiveProfile } from '../store/useStore';
 import { useComputation } from '../hooks/useComputation';
 import { formatEur, formatPct } from '../engine';
 import { Badge, Button, Card, InfoTip } from '../components/ui';
-import { buildObligations, nextObligation } from '../lib/obligations';
+import { buildObligations, type Obligation } from '../lib/obligations';
 import { currentMonthForYear, formatISODate, todayISO, MONTH_LABELS } from '../lib/dates';
+import { obligationsToIcs, daysUntil } from '../lib/ics';
+import { downloadText } from '../db/repo';
 
 export function Dashboard() {
   const profile = useActiveProfile();
@@ -16,7 +18,6 @@ export function Dashboard() {
 
   const sa = setAside(month);
   const obligations = useMemo(() => buildObligations(comp), [comp]);
-  const next = nextObligation(obligations, todayISO());
 
   const hasData = invoices.length > 0;
   const monthlyCuotas = comp.ssMonthlyCuotas;
@@ -54,7 +55,8 @@ export function Dashboard() {
           </div>
           <p className="mt-3 max-w-prose text-sm text-muted">
             Provisión <strong className="text-ink">{provisioningLabel(provisioning.style)}</strong>.
-            Guarda esta cantidad y no te pillará Hacienda ni la Seguridad Social.
+            Apárta­lo y no te pillará el hachazo del IRPF ni la Seguridad Social. Lo que queda es
+            tuyo de verdad.
           </p>
 
           {/* breakdown */}
@@ -94,13 +96,8 @@ export function Dashboard() {
         />
       </div>
 
-      {/* Next deadline */}
-      <StatCard
-        title="Próximo vencimiento"
-        value={next ? formatEur(next.amountCents, { decimals: false }) : '—'}
-        sub={next ? `${next.model} · ${formatISODate(next.dueDate)}` : 'Sin vencimientos próximos'}
-        onClick={() => setScreen('taxes')}
-      />
+      {/* Reminders: upcoming deadlines + calendar export */}
+      <Reminders obligations={obligations} />
 
       {/* Persona explainer */}
       <PersonaExplainer required={comp.modelo130Required.required} ratio={comp.modelo130Required.retencionRatio} foral={comp.foralUnsupported} />
@@ -111,7 +108,7 @@ export function Dashboard() {
           <h3 className="text-sm font-semibold text-ink">Calendario de caja {profile.year}</h3>
           <Button variant="ghost" onClick={() => setScreen('taxes')}>Ver impuestos →</Button>
         </div>
-        <CalendarStrip cuotas={monthlyCuotas} obligations={obligations} />
+        <CalendarStrip cuotas={monthlyCuotas} />
       </Card>
     </div>
   );
@@ -191,40 +188,70 @@ function PersonaExplainer({ required, ratio, foral }: { required: boolean; ratio
   );
 }
 
-function CalendarStrip({
-  cuotas,
-  obligations,
-}: {
-  cuotas: number[];
-  obligations: { dueDate: string; label: string; amountCents: number; model: string }[];
-}) {
-  // Group obligations by month for the active year.
+function CalendarStrip({ cuotas }: { cuotas: number[] }) {
+  // Monthly cuota outflow strip.
   return (
-    <div>
-      <div className="grid grid-cols-6 gap-2 md:grid-cols-12">
-        {MONTH_LABELS.map((m, i) => {
-          const hasCuota = cuotas[i] > 0;
-          return (
-            <div key={m} className="rounded-lg bg-surface-2/60 p-2 text-center">
-              <div className="text-[11px] font-medium text-muted">{m}</div>
-              <div className="mt-1 text-[10px] text-muted tnum">
-                {hasCuota ? formatEur(cuotas[i], { decimals: false }) : '—'}
-              </div>
+    <div className="grid grid-cols-6 gap-2 md:grid-cols-12">
+      {MONTH_LABELS.map((m, i) => {
+        const hasCuota = cuotas[i] > 0;
+        return (
+          <div key={m} className="rounded-lg bg-surface-2/60 p-2 text-center">
+            <div className="text-[11px] font-medium text-muted">{m}</div>
+            <div className="mt-1 text-[10px] text-muted tnum">
+              {hasCuota ? formatEur(cuotas[i], { decimals: false }) : '—'}
             </div>
-          );
-        })}
-      </div>
-      <ul className="mt-4 space-y-1.5">
-        {obligations.slice(0, 6).map((o, i) => (
-          <li key={i} className="flex items-center justify-between rounded-lg px-2 py-1 text-sm hover:bg-surface-2/50">
-            <span className="flex items-center gap-2">
-              <span className="font-mono text-xs text-muted tnum">{formatISODate(o.dueDate)}</span>
-              <span className="text-ink">{o.label}</span>
-            </span>
-            <span className="font-mono text-ink tnum">{formatEur(o.amountCents)}</span>
-          </li>
-        ))}
-      </ul>
+          </div>
+        );
+      })}
     </div>
+  );
+}
+
+/** Upcoming-deadline reminders with countdown + .ics calendar export. */
+function Reminders({ obligations }: { obligations: Obligation[] }) {
+  const now = new Date();
+  const today = todayISO();
+  const upcoming = obligations.filter((o) => o.dueDate >= today).slice(0, 8);
+
+  function exportAll() {
+    downloadText('vencimientos-autonomos.ics', obligationsToIcs(obligations, now), 'text/calendar');
+  }
+  function exportOne(o: Obligation) {
+    downloadText(`${o.model}-${o.dueDate}.ics`, obligationsToIcs([o], now), 'text/calendar');
+  }
+
+  return (
+    <Card className="p-5">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <h3 className="flex items-center text-sm font-semibold text-ink">
+          Próximos vencimientos
+          <InfoTip text="Descarga un archivo .ics y ábrelo en tu calendario (Google/Apple): te avisará 7 y 2 días antes de cada vencimiento, aunque no tengas la app abierta." />
+        </h3>
+        <Button onClick={exportAll}>Añadir todo al calendario (.ics)</Button>
+      </div>
+      {upcoming.length === 0 ? (
+        <p className="text-sm text-muted">Sin vencimientos próximos.</p>
+      ) : (
+        <ul className="divide-y divide-border">
+          {upcoming.map((o) => {
+            const d = daysUntil(o.dueDate, now);
+            const tone = d <= 7 ? 'danger' : d <= 20 ? 'warn' : 'neutral';
+            return (
+              <li key={o.id} className="flex items-center justify-between gap-3 py-2">
+                <div className="min-w-0">
+                  <div className="truncate text-sm text-ink">{o.model} · {o.label}</div>
+                  <div className="font-mono text-xs text-muted tnum">{formatISODate(o.dueDate)}</div>
+                </div>
+                <div className="flex shrink-0 items-center gap-3">
+                  <span className="font-mono text-sm tnum">{o.informational ? '—' : formatEur(o.amountCents)}</span>
+                  <Badge tone={tone}>{d === 0 ? 'hoy' : d === 1 ? 'mañana' : `en ${d} días`}</Badge>
+                  <button className="text-muted hover:text-accent" title="Añadir al calendario" onClick={() => exportOne(o)}>📅</button>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </Card>
   );
 }

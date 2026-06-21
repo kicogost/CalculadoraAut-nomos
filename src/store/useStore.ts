@@ -37,6 +37,7 @@ interface StoreState {
   expenses: Expense[];
   facturas: Factura[];
   issuer: IssuerProfile;
+  clientHours: Record<string, number>;
   profiles: Record<number, YearProfile>;
   activeYear: number;
   provisioning: ProvisioningSettings;
@@ -63,6 +64,7 @@ interface StoreState {
   completeOnboarding: (profile: YearProfile) => Promise<void>;
 
   setIssuer: (issuer: IssuerProfile) => Promise<void>;
+  setClientHours: (name: string, hours: number) => Promise<void>;
   saveFactura: (factura: Factura) => Promise<void>;
   deleteFactura: (id: string) => Promise<void>;
   /** Create/refresh the linked income Invoice from a factura (feeds the calculator). */
@@ -90,6 +92,7 @@ export const useStore = create<StoreState>((set, get) => ({
   expenses: [],
   facturas: [],
   issuer: EMPTY_ISSUER,
+  clientHours: {},
   profiles: {},
   activeYear: 2026,
   provisioning: DEFAULT_PROVISIONING,
@@ -113,6 +116,7 @@ export const useStore = create<StoreState>((set, get) => ({
       expenses,
       facturas,
       issuer: s.issuer ?? EMPTY_ISSUER,
+      clientHours: s.clientHours ?? {},
       profiles,
       activeYear: s.activeYear,
       provisioning: s.provisioning ?? DEFAULT_PROVISIONING,
@@ -221,6 +225,14 @@ export const useStore = create<StoreState>((set, get) => ({
   async setIssuer(issuer) {
     await persistSettings({ issuer });
     set({ issuer });
+  },
+
+  async setClientHours(name, hours) {
+    const clientHours = { ...get().clientHours };
+    if (hours > 0) clientHours[name] = hours;
+    else delete clientHours[name];
+    await persistSettings({ clientHours });
+    set({ clientHours });
   },
 
   async saveFactura(factura) {

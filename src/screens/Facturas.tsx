@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useStore } from '../store/useStore';
 import { newId } from '../db/repo';
-import { formatEur } from '../engine';
+import { formatCurrency } from '../engine';
 import type { PlaceOfSupply } from '../engine';
+import { COUNTRIES, CURRENCIES, placeOfSupplyForCountry } from '../lib/countries';
 import type { Factura, FacturaDocType, IssuerProfile } from '../types/factura';
 import {
   DOC_TYPE_LABELS,
@@ -84,6 +85,14 @@ export function FacturasScreen() {
       clientCountry: def.country || d.clientCountry,
     }));
   }
+  // Picking the client's country auto-derives the place of supply (Spain →
+  // domestic, EU → reverse charge, non-EU → no sujeto) and the IVA/retención
+  // defaults — the export-invoicing shortcut.
+  function setCountry(country: string) {
+    const place = placeOfSupplyForCountry(country);
+    const def = PLACE_DEFAULTS[place];
+    setDraft((d) => ({ ...d, clientCountry: country, placeOfSupply: place, ivaRate: def.iva, retencionRate: def.ret }));
+  }
   function setLine(id: string, p: Partial<Factura['lineItems'][number]>) {
     patch({ lineItems: draft.lineItems.map((l) => (l.id === id ? { ...l, ...p } : l)) });
   }
@@ -148,11 +157,24 @@ export function FacturasScreen() {
             <Field label="Nombre del cliente">
               <TextInput value={draft.clientName} onChange={(e) => patch({ clientName: e.target.value })} />
             </Field>
-            <Field label="CIF/NIF/NIE">
+            <Field label={draft.placeOfSupply === 'eu_b2b' ? 'NIF-IVA del cliente' : 'CIF/NIF/NIE'}>
               <TextInput value={draft.clientNif} onChange={(e) => patch({ clientNif: e.target.value })} />
             </Field>
-            <Field label="País">
-              <TextInput value={draft.clientCountry} onChange={(e) => patch({ clientCountry: e.target.value })} />
+            <Field
+              label="País del cliente"
+              hint={
+                draft.placeOfSupply === 'eu_b2b'
+                  ? 'Intracomunitario: necesitas estar en el ROI/VIES; se informa en el Modelo 349.'
+                  : draft.placeOfSupply === 'non_eu_export'
+                    ? 'Fuera de la UE: operación no sujeta a IVA español.'
+                    : undefined
+              }
+            >
+              <Select value={draft.clientCountry} onChange={(e) => setCountry(e.target.value)}>
+                {COUNTRIES.map((c) => (
+                  <option key={c.name} value={c.name}>{c.name}</option>
+                ))}
+              </Select>
             </Field>
             <Field label="Dirección">
               <TextInput value={draft.clientAddress} onChange={(e) => patch({ clientAddress: e.target.value })} />
@@ -191,6 +213,11 @@ export function FacturasScreen() {
                 {[0, 7, 15].map((r) => <option key={r} value={r}>{r}%</option>)}
               </Select>
             </Field>
+            <Field label="Divisa" hint={draft.currency !== 'EUR' ? 'Solo afecta al PDF. El cálculo de impuestos es en EUR.' : undefined}>
+              <Select value={draft.currency} onChange={(e) => patch({ currency: e.target.value })}>
+                {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              </Select>
+            </Field>
             <Field label="Condiciones de pago">
               <TextInput value={draft.paymentTerms} onChange={(e) => patch({ paymentTerms: e.target.value })} />
             </Field>
@@ -211,11 +238,17 @@ export function FacturasScreen() {
             {linked ? (
               <Button variant="ghost" onClick={() => removeFacturaFromIncome(draft)}>Quitar de ingresos</Button>
             ) : (
-              <Button onClick={() => addFacturaToIncome(draft)}>Añadir a ingresos</Button>
+              <Button onClick={() => addFacturaToIncome(draft)} disabled={draft.currency !== 'EUR'}>Añadir a ingresos</Button>
             )}
             <Button variant="ghost" onClick={newDraft}>Nueva</Button>
           </div>
           {linked && <p className="text-xs text-positive">Esta factura está incluida en tus ingresos y cuenta para el cálculo.</p>}
+          {!linked && draft.currency !== 'EUR' && (
+            <p className="text-xs text-muted">
+              Factura en {draft.currency}: añádela a ingresos manualmente con el importe en EUR (el
+              cálculo de impuestos es en EUR).
+            </p>
+          )}
         </div>
       </div>
 
@@ -244,7 +277,7 @@ export function FacturasScreen() {
                       </td>
                       <td className="px-4 py-2 tnum text-muted">{f.issueDate}</td>
                       <td className="px-4 py-2">{f.clientName || '—'}</td>
-                      <td className="px-4 py-2 text-right font-mono tnum">{formatEur(facturaTotals(f).totalCents)}</td>
+                      <td className="px-4 py-2 text-right font-mono tnum">{formatCurrency(facturaTotals(f).totalCents, f.currency)}</td>
                       <td className="px-4 py-2 text-right">
                         <button className="text-xs text-accent hover:underline" onClick={() => setDraft(f)}>Editar</button>
                         <button className="ml-3 text-xs text-accent hover:underline" onClick={() => downloadPdf(f, issuer)}>PDF</button>
@@ -381,20 +414,20 @@ function Preview({ factura, issuer }: { factura: Factura; issuer: IssuerProfile 
             <tr key={l.id} className="border-b border-border">
               <td className="py-1">{l.concept || '—'}</td>
               <td className="py-1 text-right tnum">{l.quantity}</td>
-              <td className="py-1 text-right tnum">{formatEur(l.unitPriceCents)}</td>
-              <td className="py-1 text-right tnum">{formatEur(lineAmountCents(l))}</td>
+              <td className="py-1 text-right tnum">{formatCurrency(l.unitPriceCents, factura.currency)}</td>
+              <td className="py-1 text-right tnum">{formatCurrency(lineAmountCents(l), factura.currency)}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
       <div className="mt-3 ml-auto w-48 space-y-1 text-xs">
-        <Line label="Base imponible" value={formatEur(t.baseCents)} />
-        <Line label={`IVA (${factura.ivaRate}%)`} value={factura.ivaRate ? formatEur(t.ivaCents) : '—'} />
-        {factura.retencionRate > 0 && <Line label={`Retención (${factura.retencionRate}%)`} value={`−${formatEur(t.retencionCents)}`} />}
+        <Line label="Base imponible" value={formatCurrency(t.baseCents, factura.currency)} />
+        <Line label={`IVA (${factura.ivaRate}%)`} value={factura.ivaRate ? formatCurrency(t.ivaCents, factura.currency) : '—'} />
+        {factura.retencionRate > 0 && <Line label={`Retención (${factura.retencionRate}%)`} value={`−${formatCurrency(t.retencionCents, factura.currency)}`} />}
         <div className="flex justify-between border-t border-ink pt-2 text-base font-semibold">
           <span>Total</span>
-          <span className="tnum">{formatEur(t.totalCents)}</span>
+          <span className="tnum">{formatCurrency(t.totalCents, factura.currency)}</span>
         </div>
       </div>
 

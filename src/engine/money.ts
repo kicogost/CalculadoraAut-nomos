@@ -40,10 +40,19 @@ export function floorZero(cents: Cents): Cents {
 
 /** Format cents as a Spanish euro string, e.g. 123456 → "1.234,56 €". */
 export function formatEur(cents: Cents, opts: { decimals?: boolean } = {}): string {
+  return formatCurrency(cents, 'EUR', opts);
+}
+
+/** Format integer minor units in any currency, Spanish locale. */
+export function formatCurrency(
+  cents: Cents,
+  currency = 'EUR',
+  opts: { decimals?: boolean } = {},
+): string {
   const decimals = opts.decimals ?? true;
   return new Intl.NumberFormat('es-ES', {
     style: 'currency',
-    currency: 'EUR',
+    currency,
     minimumFractionDigits: decimals ? 2 : 0,
     maximumFractionDigits: decimals ? 2 : 0,
   }).format(cents / 100);

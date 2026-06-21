@@ -10,12 +10,12 @@ describe('App smoke test (mounts without crashing)', () => {
   it('shows onboarding on first run', async () => {
     render(<App />);
     // Onboarding welcome step renders after the store loads.
-    await waitFor(() => expect(screen.getByText('Bienvenido/a')).toBeTruthy());
+    await waitFor(() => expect(screen.getByText(/Independízate del susto/)).toBeTruthy());
   });
 
   it('can walk through onboarding to the dashboard', async () => {
     render(<App />);
-    await waitFor(() => expect(screen.getByText('Bienvenido/a')).toBeTruthy());
+    await waitFor(() => expect(screen.getByText(/Independízate del susto/)).toBeTruthy());
 
     // Click "Empezar" then advance through the wizard.
     fireEvent.click(screen.getByText('Empezar'));

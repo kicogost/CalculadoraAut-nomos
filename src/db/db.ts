@@ -9,6 +9,8 @@ export interface AppSettings {
   onboardingDone: boolean;
   provisioning: ProvisioningSettings;
   issuer?: IssuerProfile;
+  /** Hours dedicated per client (by name), for the effective hourly-rate view. */
+  clientHours?: Record<string, number>;
 }
 
 /**

@@ -61,11 +61,12 @@ export function Onboarding() {
 
   const steps = [
     // 0 — welcome + disclaimer (non-dismissable acknowledgement)
-    <Step key="w" title="Bienvenido/a" onNext={() => setStep(1)} nextLabel="Empezar">
+    <Step key="w" title="Independízate del susto del IRPF" onNext={() => setStep(1)} nextLabel="Empezar">
       <p className="text-sm text-muted">
-        Esta herramienta te dice, cada mes, cuánto dinero apartar para no llevarte sustos con
-        Hacienda ni con la Seguridad Social: IVA, IRPF (Modelo 130 y Renta), cuota de autónomos y la
-        regularización de fin de año.
+        Ves dinero en la cuenta, crees que es beneficio, te lo gastas… y en junio llega el hachazo.
+        Esta herramienta te enseña tu <strong className="text-ink">beneficio neto real</strong> y
+        <strong className="text-ink"> cuánto apartar cada mes</strong> para cubrir IVA, IRPF (Modelo
+        130 y Renta), la cuota de autónomos y la regularización de fin de año. Sin sustos.
       </p>
       <div className="mt-4 rounded-xl bg-warn-soft p-4 text-xs leading-relaxed text-warn">
         <strong>Importante:</strong> es una herramienta de estimación, no asesoramiento fiscal (no
