@@ -12,15 +12,7 @@ import { EMPTY_ISSUER } from '../types/factura';
 import { facturaToInvoiceFields } from '../lib/factura';
 import type { DraftEntry } from '../types/reader';
 
-export type Screen =
-  | 'dashboard'
-  | 'income'
-  | 'expenses'
-  | 'taxes'
-  | 'facturas'
-  | 'importar'
-  | 'profile'
-  | 'settings';
+export type Screen = 'dashboard' | 'facturas' | 'taxes' | 'ajustes';
 
 export function defaultProfile(year: number): YearProfile {
   return {

@@ -20,6 +20,8 @@ export function Dashboard() {
 
   const hasData = invoices.length > 0;
   const monthlyCuotas = comp.ssMonthlyCuotas;
+  const ivaPagarCents = comp.modelo303.reduce((s, q) => s + Math.max(0, q.resultCents), 0);
+  const impuestosCents = comp.irpf.totalCuotaCents + ivaPagarCents;
 
   return (
     <div className="space-y-6">
@@ -27,8 +29,8 @@ export function Dashboard() {
         <Card className="p-5 bg-accent-soft border-accent/20">
           <p className="text-sm text-ink">
             Aún no has añadido ingresos. Empieza en{' '}
-            <button className="font-semibold text-accent underline" onClick={() => setScreen('income')}>
-              Ingresos
+            <button className="font-semibold text-accent underline" onClick={() => setScreen('facturas')}>
+              Facturas
             </button>{' '}
             y verás aquí cuánto apartar cada mes.
           </p>
@@ -64,26 +66,41 @@ export function Dashboard() {
         </div>
       </Card>
 
-      {/* The plain-language promise */}
-      <div className="grid gap-4 md:grid-cols-3">
+      {/* Resumen del año: ingresos · gastos · impuestos · beneficio neto */}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <StatCard
-          title="Has ganado (neto)"
-          value={formatEur(comp.rendimientoNetoCents)}
-          sub="Ingresos − gastos deducibles (incl. cuota)"
+          title="Ingresos"
+          value={formatEur(comp.income.baseCents)}
+          sub={`${profile.year} · base sin IVA`}
+          onClick={() => setScreen('facturas')}
         />
         <StatCard
-          title="Te queda (tras impuestos)"
-          value={formatEur(comp.takeHomeCents)}
-          sub="Neto − IRPF anual estimado"
-          tone="positive"
+          title="Gastos"
+          value={formatEur(comp.expenses.totalCents)}
+          sub="Incl. cuota de autónomos"
+          onClick={() => setScreen('facturas')}
         />
         <StatCard
-          title="Próximo vencimiento"
-          value={next ? formatEur(next.amountCents, { decimals: false }) : '—'}
-          sub={next ? `${next.model} · ${formatISODate(next.dueDate)}` : 'Sin vencimientos próximos'}
+          title="Impuestos (est.)"
+          value={formatEur(impuestosCents)}
+          sub="IRPF anual + IVA a pagar"
           onClick={() => setScreen('taxes')}
         />
+        <StatCard
+          title="Beneficio neto"
+          value={formatEur(comp.takeHomeCents)}
+          sub="Ingresos − gastos − IRPF"
+          tone="positive"
+        />
       </div>
+
+      {/* Next deadline */}
+      <StatCard
+        title="Próximo vencimiento"
+        value={next ? formatEur(next.amountCents, { decimals: false }) : '—'}
+        sub={next ? `${next.model} · ${formatISODate(next.dueDate)}` : 'Sin vencimientos próximos'}
+        onClick={() => setScreen('taxes')}
+      />
 
       {/* Persona explainer */}
       <PersonaExplainer required={comp.modelo130Required.required} ratio={comp.modelo130Required.retencionRatio} foral={comp.foralUnsupported} />

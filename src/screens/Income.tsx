@@ -41,7 +41,7 @@ function emptyDraft(year: number): Draft {
   };
 }
 
-export function IncomeScreen() {
+export function IncomeScreen({ embedded = false }: { embedded?: boolean } = {}) {
   const profile = useActiveProfile();
   const invoices = useStore((s) => s.invoices);
   const addInvoice = useStore((s) => s.addInvoice);
@@ -70,9 +70,11 @@ export function IncomeScreen() {
 
   return (
     <div className="space-y-6">
-      <SectionTitle sub="Modela cada factura con su tipo de cliente: el IVA y la obligación de presentar el 130 dependen de a quién facturas.">
-        Ingresos
-      </SectionTitle>
+      {!embedded && (
+        <SectionTitle sub="Modela cada factura con su tipo de cliente: el IVA y la obligación de presentar el 130 dependen de a quién facturas.">
+          Ingresos
+        </SectionTitle>
+      )}
 
       <Card className="p-5">
         <h3 className="mb-4 text-sm font-semibold">{draft.id ? 'Editar factura' : 'Añadir factura'}</h3>

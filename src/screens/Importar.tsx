@@ -19,7 +19,7 @@ const PLACE_LABELS: Record<PlaceOfSupply, string> = {
 
 type Tab = 'csv' | 'ai';
 
-export function ImportarScreen() {
+export function ImportarScreen({ onDone }: { onDone?: (kind: 'ingresos' | 'gastos') => void } = {}) {
   const [tab, setTab] = useState<Tab>('csv');
   const [drafts, setDrafts] = useState<DraftEntry[]>([]);
 
@@ -40,7 +40,7 @@ export function ImportarScreen() {
         <AiImporter onDrafts={(d) => setDrafts((prev) => [...prev, ...d])} />
       )}
 
-      {drafts.length > 0 && <ReviewTable drafts={drafts} setDrafts={setDrafts} />}
+      {drafts.length > 0 && <ReviewTable drafts={drafts} setDrafts={setDrafts} onDone={onDone} />}
     </div>
   );
 }
@@ -204,7 +204,15 @@ function AiImporter({ onDrafts }: { onDrafts: (d: DraftEntry[]) => void }) {
 // Review & confirm
 // ---------------------------------------------------------------------------
 
-function ReviewTable({ drafts, setDrafts }: { drafts: DraftEntry[]; setDrafts: (d: DraftEntry[]) => void }) {
+function ReviewTable({
+  drafts,
+  setDrafts,
+  onDone,
+}: {
+  drafts: DraftEntry[];
+  setDrafts: (d: DraftEntry[]) => void;
+  onDone?: (kind: 'ingresos' | 'gastos') => void;
+}) {
   const importDrafts = useStore((s) => s.importDrafts);
   const setScreen = useStore((s) => s.setScreen);
   const [result, setResult] = useState<string | null>(null);
@@ -225,8 +233,8 @@ function ReviewTable({ drafts, setDrafts }: { drafts: DraftEntry[]; setDrafts: (
       <Card className="p-5 bg-positive-soft border-positive/20">
         <p className="text-sm text-ink">{result}</p>
         <div className="mt-3 flex gap-2">
-          <Button onClick={() => setScreen('income')}>Ver ingresos</Button>
-          <Button onClick={() => setScreen('expenses')}>Ver gastos</Button>
+          <Button onClick={() => (onDone ? onDone('ingresos') : setScreen('facturas'))}>Ver ingresos</Button>
+          <Button onClick={() => (onDone ? onDone('gastos') : setScreen('facturas'))}>Ver gastos</Button>
           <Button variant="ghost" onClick={() => setResult(null)}>Importar más</Button>
         </div>
       </Card>

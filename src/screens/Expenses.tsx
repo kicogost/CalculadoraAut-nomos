@@ -29,7 +29,7 @@ function emptyDraft(year: number): Draft {
   };
 }
 
-export function ExpensesScreen() {
+export function ExpensesScreen({ embedded = false }: { embedded?: boolean } = {}) {
   const profile = useActiveProfile();
   const expenses = useStore((s) => s.expenses);
   const addExpense = useStore((s) => s.addExpense);
@@ -51,9 +51,11 @@ export function ExpensesScreen() {
 
   return (
     <div className="space-y-6">
-      <SectionTitle sub="Introduce tus gastos reales (no estimamos nada). La cuota de autónomos se añade sola cada mes como gasto deducible.">
-        Gastos
-      </SectionTitle>
+      {!embedded && (
+        <SectionTitle sub="Introduce tus gastos reales (no estimamos nada). La cuota de autónomos se añade sola cada mes como gasto deducible.">
+          Gastos
+        </SectionTitle>
+      )}
 
       <Card className="p-5">
         <h3 className="mb-4 text-sm font-semibold">{draft.id ? 'Editar gasto' : 'Añadir gasto'}</h3>

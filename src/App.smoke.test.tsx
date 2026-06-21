@@ -33,4 +33,19 @@ describe('App smoke test (mounts without crashing)', () => {
     // Dashboard hero should appear.
     await waitFor(() => expect(screen.getByText(/Aparta este mes/)).toBeTruthy());
   });
+
+  it('navigates the simplified 4-hub nav', async () => {
+    // Onboarding was completed in the previous test (persisted in IndexedDB),
+    // so this render lands straight on the dashboard.
+    render(<App />);
+    await waitFor(() => expect(screen.getByText(/Aparta este mes/)).toBeTruthy());
+
+    // Facturas hub: Ingresos/Gastos segmented + create-invoice action.
+    fireEvent.click(screen.getAllByText('Facturas')[0]);
+    await waitFor(() => expect(screen.getByText('Crear factura PDF')).toBeTruthy());
+
+    // Ajustes hub: año y perfil + datos.
+    fireEvent.click(screen.getAllByText('Ajustes')[0]);
+    await waitFor(() => expect(screen.getAllByText('Año y perfil').length).toBeGreaterThan(0));
+  });
 });
