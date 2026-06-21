@@ -41,9 +41,38 @@ const EXTRACT_TOOL = {
 
 const PROMPT = `Extract the fields of this Spanish invoice or receipt. If a value is not present, use null (numbers) or an empty string. Amounts are in euros. Determine "kind": expense for a bill/receipt the self-employed person paid, income for an invoice they issued. Always respond by calling the record_document tool.`;
 
+/** Max raw PDF size (bytes). Kept under Vercel's ~4.5 MB body limit after base64. */
+const MAX_PDF_BYTES = 3 * 1024 * 1024;
+
+/**
+ * Only allow requests that originate from our own site (defence-in-depth against
+ * casual abuse of this public endpoint — combine with a rate limit + an Anthropic
+ * spend cap). Same-origin browser requests carry an Origin header matching the
+ * deployment host; *.vercel.app preview deploys and an optional ALLOWED_ORIGIN
+ * env var are also accepted. Requests with no Origin (e.g. curl) are rejected.
+ */
+function isAllowedOrigin(req: VercelRequest): boolean {
+  const origin = req.headers.origin;
+  const allowed = process.env.ALLOWED_ORIGIN;
+  if (allowed && origin === allowed) return true;
+  if (!origin) return false;
+  try {
+    const o = new URL(origin);
+    if (o.host === req.headers.host) return true;
+    if (o.hostname.endsWith('.vercel.app')) return true;
+  } catch {
+    return false;
+  }
+  return false;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== 'POST') {
     res.status(405).json({ error: 'Method not allowed' });
+    return;
+  }
+  if (!isAllowedOrigin(req)) {
+    res.status(403).json({ error: 'Origen no permitido.' });
     return;
   }
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -62,6 +91,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
   if (mediaType !== 'application/pdf') {
     res.status(400).json({ error: 'Solo se admiten archivos PDF.' });
+    return;
+  }
+  // base64 length × 3/4 ≈ raw byte size.
+  const approxBytes = Math.floor((fileBase64.length * 3) / 4);
+  if (approxBytes > MAX_PDF_BYTES) {
+    res.status(413).json({ error: `El PDF supera el límite de ${MAX_PDF_BYTES / 1024 / 1024} MB.` });
     return;
   }
 

@@ -178,7 +178,7 @@ function AiImporter({ onDrafts }: { onDrafts: (d: DraftEntry[]) => void }) {
         <InfoTip text="Cada PDF se envía a un modelo de IA en el servidor que extrae los campos. El documento sale de tu dispositivo solo para este análisis. Requiere ANTHROPIC_API_KEY configurada en el despliegue." />
       </h3>
       <p className="mb-3 text-xs text-muted">
-        Formato: PDF. Puedes seleccionar varios.
+        Formato: PDF (máx. 3 MB por archivo). Puedes seleccionar varios.
       </p>
       <input
         ref={fileRef}

@@ -53,10 +53,16 @@ function fieldsToDraft(f: ExtractedFields, filename: string): DraftEntry {
   return base;
 }
 
+/** Max PDF size accepted by the extractor (must match the server cap). */
+export const MAX_PDF_BYTES = 3 * 1024 * 1024;
+
 /** Send one PDF to the AI extractor and return a draft entry. */
 export async function extractFromFile(file: File): Promise<DraftEntry> {
   if (file.type !== 'application/pdf') {
     throw new Error(`"${file.name}" no es un PDF. Solo se admiten archivos PDF.`);
+  }
+  if (file.size > MAX_PDF_BYTES) {
+    throw new Error(`"${file.name}" supera ${MAX_PDF_BYTES / 1024 / 1024} MB. Comprime el PDF e inténtalo de nuevo.`);
   }
   const fileBase64 = await fileToBase64(file);
   const res = await fetch('/api/extract', {
