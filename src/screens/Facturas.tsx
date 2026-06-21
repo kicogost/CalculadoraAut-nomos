@@ -4,6 +4,16 @@ import { newId } from '../db/repo';
 import { formatCurrency } from '../engine';
 import type { PlaceOfSupply } from '../engine';
 import { COUNTRIES, CURRENCIES, placeOfSupplyForCountry } from '../lib/countries';
+import {
+  huellaAlta,
+  buildQrUrl,
+  centsToAmountString,
+  isoToAeatDate,
+  fechaHoraHusoGen,
+  QR_HEADER,
+  VERIFACTU_MARK,
+  VERIFIABLE_MARK,
+} from '../lib/verifactu';
 import type { Factura, FacturaDocType, IssuerProfile } from '../types/factura';
 import {
   DOC_TYPE_LABELS,
@@ -106,6 +116,48 @@ export function FacturasScreen() {
 
   async function save() {
     await saveFactura(draft);
+  }
+
+  const [vfStatus, setVfStatus] = useState<string | null>(null);
+  async function generateVerifactu() {
+    if (!issuer.nif.trim()) {
+      setVfStatus('Añade tu NIF en «Tus datos de emisor» para generar el registro Verifactu.');
+      return;
+    }
+    setVfStatus('Generando…');
+    const totals = facturaTotals(draft);
+    const importe = centsToAmountString(totals.baseCents + totals.ivaCents);
+    const numSerie = facturaRef(draft);
+    const fecha = isoToAeatDate(draft.issueDate);
+    // Chain from the most recently generated Verifactu record in this SIF.
+    const prev = facturas
+      .filter((f) => f.verifactu)
+      .map((f) => f.verifactu!)
+      .sort((a, b) => b.fechaHoraGen.localeCompare(a.fechaHoraGen))[0];
+    const huellaAnterior = prev?.huella ?? '';
+    const fechaHoraGen = fechaHoraHusoGen(new Date());
+
+    const huella = await huellaAlta({
+      idEmisor: issuer.nif,
+      numSerie,
+      fechaExpedicion: fecha,
+      tipoFactura: 'F1',
+      cuotaTotal: centsToAmountString(totals.ivaCents),
+      importeTotal: importe,
+      huellaAnterior,
+      fechaHoraGen,
+    });
+    const qrUrl = buildQrUrl({ nif: issuer.nif, numSerie, fecha, importe, verifactu: true, env: 'produccion' });
+    const QRCode = await import('qrcode');
+    const qrImage = await QRCode.toDataURL(qrUrl, { errorCorrectionLevel: 'M', margin: 2, width: 240 });
+
+    const updated: Factura = {
+      ...draft,
+      verifactu: { huella, huellaAnterior, fechaHoraGen, qrUrl, qrImage, env: 'produccion' },
+    };
+    setDraft(updated);
+    await saveFactura(updated);
+    setVfStatus('Registro Verifactu generado (huella + QR). No se ha enviado a la AEAT.');
   }
   function newDraft() {
     setDraft(emptyFactura(activeYear, facturas));
@@ -242,6 +294,27 @@ export function FacturasScreen() {
             )}
             <Button variant="ghost" onClick={newDraft}>Nueva</Button>
           </div>
+          {draft.docType === 'factura' && (
+            <div className="rounded-xl border border-border p-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-xs font-semibold text-ink">Verifactu (preparación)</span>
+                <Button onClick={generateVerifactu}>
+                  {draft.verifactu ? 'Regenerar registro Verifactu' : 'Generar registro Verifactu'}
+                </Button>
+              </div>
+              {draft.verifactu && (
+                <p className="mt-2 break-all font-mono text-[10px] text-muted">
+                  Huella: {draft.verifactu.huella}
+                </p>
+              )}
+              {vfStatus && <p className="mt-1 text-xs text-muted">{vfStatus}</p>}
+              <p className="mt-1 text-[11px] text-muted">
+                Genera la huella encadenada y el QR en formato AEAT. <strong>No</strong> se envía a
+                la AEAT (eso requiere certificado digital). Obligatorio para autónomos desde el 1 jul
+                2027.
+              </p>
+            </div>
+          )}
           {linked && <p className="text-xs text-positive">Esta factura está incluida en tus ingresos y cuenta para el cálculo.</p>}
           {!linked && draft.currency !== 'EUR' && (
             <p className="text-xs text-muted">
@@ -273,7 +346,7 @@ export function FacturasScreen() {
                   .map((f) => (
                     <tr key={f.id} className="border-t border-border hover:bg-surface-2/40">
                       <td className="px-4 py-2 font-mono tnum">
-                        {facturaRef(f)} {f.linkedInvoiceId && <Badge tone="positive">en ingresos</Badge>}
+                        {facturaRef(f)} {f.linkedInvoiceId && <Badge tone="positive">en ingresos</Badge>} {f.verifactu && <Badge tone="accent">Verifactu</Badge>}
                       </td>
                       <td className="px-4 py-2 tnum text-muted">{f.issueDate}</td>
                       <td className="px-4 py-2">{f.clientName || '—'}</td>
@@ -298,11 +371,12 @@ function VerifactuNote() {
   return (
     <Card className="p-4 bg-warn-soft border-warn/20">
       <p className="text-xs leading-relaxed text-warn">
-        <strong>Documentos sin valor fiscal.</strong> Esta herramienta genera PDFs (borrador/proforma)
-        y no emite facturas conformes con Verifactu (sin huella, sin QR tributario, sin envío a la
-        AEAT). La obligación de Verifactu para autónomos comienza el <strong>1 de julio de 2027</strong>.
-        Hasta entonces puedes usar estos PDFs, pero verifica los requisitos legales antes de
-        entregarlos como factura oficial.
+        <strong>Verifactu: preparación, no envío.</strong> Para documentos de tipo «Factura» puedes
+        generar el <strong>registro Verifactu</strong> (huella encadenada + QR en formato oficial
+        AEAT, verificado contra los vectores de prueba de la AEAT). Pero esta herramienta
+        <strong> no remite</strong> las facturas a la AEAT (eso exige certificado digital y el
+        servicio web de la Agencia), así que por sí sola no constituye cumplimiento completo. La
+        obligación para autónomos empieza el <strong>1 de julio de 2027</strong>.
       </p>
     </Card>
   );
@@ -432,6 +506,17 @@ function Preview({ factura, issuer }: { factura: Factura; issuer: IssuerProfile 
       </div>
 
       {mention && <p className="mt-4 rounded bg-surface-2/60 p-2 text-[11px] text-muted">{mention}</p>}
+
+      {factura.verifactu && (
+        <div className="mt-4 flex items-start gap-3 rounded border border-border p-2">
+          <img src={factura.verifactu.qrImage} alt="QR tributario" className="h-20 w-20" />
+          <div className="text-[10px] leading-snug text-muted">
+            <div className="font-semibold text-ink">{QR_HEADER}</div>
+            <div className="font-semibold text-ink">{VERIFACTU_MARK}</div>
+            <div>{VERIFIABLE_MARK}</div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

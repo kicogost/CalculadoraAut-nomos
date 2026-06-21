@@ -9,6 +9,7 @@ import {
   lineAmountCents,
   NON_FISCAL_NOTICE,
 } from '../lib/factura';
+import { QR_HEADER, VERIFACTU_MARK, VERIFIABLE_MARK } from '../lib/verifactu';
 
 const C = {
   ink: '#0f172a',
@@ -40,6 +41,11 @@ const s = StyleSheet.create({
   totalLine: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 },
   grandTotal: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, marginTop: 4, borderTopWidth: 1, borderTopColor: C.ink },
   grandTotalText: { fontSize: 13, fontFamily: 'Helvetica-Bold' },
+  qrRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 18 },
+  qrImg: { width: 92, height: 92, marginRight: 10 },
+  qrHeader: { fontSize: 8, fontFamily: 'Helvetica-Bold', color: C.muted },
+  qrMark: { fontSize: 10, fontFamily: 'Helvetica-Bold', marginTop: 2 },
+  qrText: { fontSize: 7, color: C.muted, maxWidth: 150 },
   mention: { marginTop: 22, padding: 8, backgroundColor: C.soft, color: C.muted, fontSize: 8 },
   notice: { marginTop: 8, fontSize: 7, color: C.muted },
   footer: { position: 'absolute', bottom: 28, left: 40, right: 40, fontSize: 7, color: C.muted, textAlign: 'center' },
@@ -53,6 +59,18 @@ export function FacturaDocument({ factura, issuer }: { factura: Factura; issuer:
   return (
     <Document title={`${DOC_TYPE_LABELS[factura.docType]} ${facturaRef(factura)}`}>
       <Page size="A4" style={s.page}>
+        {/* QR tributario at the top (Verifactu, Art. 21) */}
+        {factura.verifactu && (
+          <View style={s.qrRow}>
+            <Image style={s.qrImg} src={factura.verifactu.qrImage} />
+            <View>
+              <Text style={s.qrHeader}>{QR_HEADER}</Text>
+              <Text style={s.qrMark}>{VERIFACTU_MARK}</Text>
+              <Text style={s.qrText}>{VERIFIABLE_MARK}</Text>
+            </View>
+          </View>
+        )}
+
         {/* Header: logo + issuer */}
         <View style={s.header}>
           <View>

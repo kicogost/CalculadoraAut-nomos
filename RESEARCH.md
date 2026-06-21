@@ -249,3 +249,44 @@ Q4/annual dates stored as 2027-02-01 and flagged for re-verification.
 4. **Tarifa plana with-MEI cents (≈88,64 €)** — not officially published; nominal 80 € is authoritative.
 5. Official seg-social.es / importass pages returned HTTP 403 to automated fetching; SS verification
    rests on the BOE primary text (directly fetched) + secondary sources.
+
+---
+
+## 8. Verifactu (RD 1007/2023 + Orden HAC/1177/2024) — technical records
+
+Implemented offline in `src/lib/verifactu.ts` and verified in `src/lib/verifactu.test.ts`.
+**This app generates the records but does NOT submit them to the AEAT** (remisión needs a digital
+certificate + the AEAT web service). Obligation for autónomos: **2027-07-01** (companies 2027-01-01).
+
+### 8.1 Huella / hash (registro de alta) — HIGH (verified against AEAT test vectors)
+
+Source: AEAT "Detalle de las especificaciones técnicas para generación de la huella o hash de los
+registros de facturación", v0.1.2 (2024-08-27)
+(`agenciatributaria.es/static_files/.../Veri-Factu_especificaciones_huella_hash_registros.pdf`).
+
+- Algorithm: **SHA-256**, output **hex uppercase, 64 chars**, input encoded UTF-8.
+- Concatenation (alta), values trimmed, `nombre=valor&...`:
+  `IDEmisorFactura=…&NumSerieFactura=…&FechaExpedicionFactura=DD-MM-YYYY&TipoFactura=…&CuotaTotal=…&ImporteTotal=…&Huella=<prev|empty>&FechaHoraHusoGenRegistro=<ISO8601 ±HH:MM>`
+- Numbers: 1–2 decimals, trailing zeros irrelevant. Empty previous huella for the first record.
+- **Official test vector (Caso 1, first record)** → `3C464DAF61ACB827C65FDA19F352A4E3BDC2C640E9E9FC4CC058073F38F12F60`; **(Caso 2, chained)** →
+  `F7B94CFD8924EDFF273501B01EE5153E4CE8F259766F88CF6ACB8935802A2B97`. Our implementation reproduces
+  both exactly (the correctness anchor).
+
+### 8.2 QR (cotejo) — HIGH
+
+Source: AEAT "Características del QR y especificaciones del servicio de cotejo", v0.5.0
+(`agenciatributaria.es/static_files/.../DetalleEspecificacTecnCodigoQRfactura.pdf`); Orden Art. 20–21.
+
+- Content = URL with UTF-8 URL-encoded params `nif`, `numserie`, `fecha` (DD-MM-YYYY), `importe`
+  (point decimal). Example: an `&` in numserie → `%26`.
+- Endpoints: producción `https://www2.agenciatributaria.gob.es/wlpl/TIKE-CONT/ValidarQR` (verifactu)
+  / `…/ValidarQRNoVerifactu`; pruebas `https://prewww2.aeat.es/wlpl/TIKE-CONT/ValidarQR…`.
+- QR: ISO/IEC 18004:2015, **error-correction level M**, 30–40 mm, ≥2 mm quiet zone (6 mm rec.), at the
+  top of the invoice. Header text above: **"QR tributario:"**; below (verifiable systems):
+  **"Factura verificable en la sede electrónica de la AEAT"** or **"VERI*FACTU"**.
+
+### 8.3 Not implemented (needs certificate + AEAT web service)
+
+Submission/remisión (the online VERI*FACTU flow or the SII-like XML POST), the registro de evento, and
+the cancellation (anulación) submission. The huella for anulación is supported in the spec but not
+wired into the UI (alta only).

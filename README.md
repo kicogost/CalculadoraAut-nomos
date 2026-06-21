@@ -19,8 +19,10 @@ un mismo usuario puede mezclar ingresos de exportación y domésticos.
 
 - **Resumen / Ingresos / Gastos / Impuestos** — el motor de cálculo y el número estrella
   («aparta esto cada mes»).
-- **Facturas** — generador de facturas/proformas en PDF (borrador, sin Verifactu); puede volcar la
-  factura a ingresos para que entre en el cálculo.
+- **Facturas** — generador de facturas/proformas en PDF; puede volcar la factura a ingresos para que
+  entre en el cálculo. **Verifactu (preparación):** genera la huella encadenada y el QR en formato
+  oficial AEAT (verificado contra los vectores de prueba de la AEAT) — pero **no remite** a la AEAT
+  (eso requiere certificado digital). Obligación para autónomos: 2027-07-01. Ver `RESEARCH.md` §8.
 - **Lector** — importa movimientos desde un **CSV del banco** (100% local, con mapeo de columnas) o
   extrae datos de **facturas/tickets en PDF con IA**, con pantalla de revisión antes de confirmar.
   La parte de IA usa una función serverless (`/api/extract`) que llama a Claude; la clave vive en el

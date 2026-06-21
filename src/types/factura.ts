@@ -24,6 +24,20 @@ export interface FacturaLineItem {
 /** Document kind. All are non-fiscal drafts in this tool (see DISCLAIMER). */
 export type FacturaDocType = 'factura' | 'proforma' | 'presupuesto';
 
+/**
+ * A locally-generated Verifactu record (huella chain + QR), in AEAT format.
+ * NOT submitted to the AEAT — preparation only.
+ */
+export interface VerifactuRecord {
+  huella: string;
+  huellaAnterior: string;
+  fechaHoraGen: string;
+  qrUrl: string;
+  /** QR image as a data URL (PNG). */
+  qrImage: string;
+  env: 'produccion' | 'pruebas';
+}
+
 export interface Factura {
   id: string;
   docType: FacturaDocType;
@@ -50,6 +64,8 @@ export interface Factura {
 
   /** Set when this factura has been added to the income/calculator. */
   linkedInvoiceId?: string;
+  /** Locally-generated Verifactu record (preparation; not submitted to AEAT). */
+  verifactu?: VerifactuRecord;
 }
 
 export const EMPTY_ISSUER: IssuerProfile = {
