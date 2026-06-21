@@ -15,7 +15,7 @@ const C = {
   ink: '#0f172a',
   muted: '#64748b',
   border: '#e2e8f0',
-  accent: '#2563eb',
+  accent: '#15171C',
   soft: '#f1f3f7',
 };
 
@@ -163,7 +163,7 @@ export function FacturaDocument({ factura, issuer }: { factura: Factura; issuer:
         <Text style={s.notice}>{NON_FISCAL_NOTICE}</Text>
 
         <Text style={s.footer} fixed>
-          {DOC_TYPE_LABELS[factura.docType]} {facturaRef(factura)} · Generado con Calculadora Autónomos
+          {DOC_TYPE_LABELS[factura.docType]} {facturaRef(factura)} · Generado con Provisio
         </Text>
       </Page>
     </Document>

@@ -49,7 +49,7 @@ export function Dashboard() {
             <span className="font-serif text-6xl leading-none tracking-tight text-ink tnum md:text-7xl">
               {formatEur(sa.totalCents, { decimals: false })}
             </span>
-            <span className="mb-1 rounded-full bg-accent-soft px-3 py-1 text-base font-semibold text-accent tnum">
+            <span className="mb-1 rounded-full bg-highlight px-3 py-1 text-base font-semibold text-highlight-ink tnum">
               {formatPct(sa.pctOfIncome)} de tus ingresos
             </span>
           </div>

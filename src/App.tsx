@@ -6,6 +6,7 @@ import { FacturasHub } from './screens/FacturasHub';
 import { AjustesHub } from './screens/AjustesHub';
 import { Onboarding } from './screens/Onboarding';
 import { Disclaimer } from './components/Disclaimer';
+import { BrandLockup } from './components/Logo';
 import { cx } from './components/ui';
 
 const NAV: { id: Screen; label: string; icon: string }[] = [
@@ -42,15 +43,7 @@ export function App() {
       {/* Top bar */}
       <header className="sticky top-0 z-10 border-b border-border bg-surface/80 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-2">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-accent font-mono text-accent-ink">
-              €
-            </span>
-            <div className="leading-tight">
-              <div className="text-sm font-semibold">Calculadora Autónomos</div>
-              <div className="text-xs text-muted">Ejercicio {activeYear}</div>
-            </div>
-          </div>
+          <BrandLockup year={activeYear} />
           {/* Desktop nav */}
           <nav className="hidden gap-1 md:flex">
             {NAV.map((n) => (

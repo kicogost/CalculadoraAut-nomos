@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useStore, defaultProfile } from '../store/useStore';
 import { COMUNIDADES, eurToCents, type PlaceOfSupply, type YearProfile } from '../engine';
 import { Button, Card, Field, Select } from '../components/ui';
+import { BrandLockup } from '../components/Logo';
 
 type Persona = 'domestic' | 'eu' | 'export';
 
@@ -130,10 +131,7 @@ export function Onboarding() {
   return (
     <div className="grid min-h-screen place-items-center bg-bg px-4">
       <div className="w-full max-w-lg">
-        <div className="mb-4 flex items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-accent font-mono text-accent-ink">€</span>
-          <span className="text-sm font-semibold">Calculadora Autónomos</span>
-        </div>
+        <BrandLockup className="mb-4" />
         {steps[step]}
         <div className="mt-4 flex justify-center gap-1.5">
           {steps.map((_, i) => (
