@@ -1,0 +1,1 @@
+# CalculadoraAut-nomos
