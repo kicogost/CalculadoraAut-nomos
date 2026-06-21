@@ -4,6 +4,7 @@ import { Dashboard } from './screens/Dashboard';
 import { IncomeScreen } from './screens/Income';
 import { ExpensesScreen } from './screens/Expenses';
 import { TaxesScreen } from './screens/Taxes';
+import { FacturasScreen } from './screens/Facturas';
 import { ProfileScreen } from './screens/Profile';
 import { SettingsScreen } from './screens/Settings';
 import { Onboarding } from './screens/Onboarding';
@@ -15,6 +16,7 @@ const NAV: { id: Screen; label: string; icon: string }[] = [
   { id: 'income', label: 'Ingresos', icon: '↑' },
   { id: 'expenses', label: 'Gastos', icon: '↓' },
   { id: 'taxes', label: 'Impuestos', icon: '§' },
+  { id: 'facturas', label: 'Facturas', icon: '▦' },
   { id: 'profile', label: 'Año y perfil', icon: '⚙' },
   { id: 'settings', label: 'Datos', icon: '↻' },
 ];
@@ -80,6 +82,7 @@ export function App() {
         {screen === 'income' && <IncomeScreen />}
         {screen === 'expenses' && <ExpensesScreen />}
         {screen === 'taxes' && <TaxesScreen />}
+        {screen === 'facturas' && <FacturasScreen />}
         {screen === 'profile' && <ProfileScreen />}
         {screen === 'settings' && <SettingsScreen />}
         <Disclaimer />

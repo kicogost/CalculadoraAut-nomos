@@ -11,20 +11,22 @@ export function newId(): string {
 // ---------------------------------------------------------------------------
 
 export async function exportAll(): Promise<string> {
-  const [invoices, expenses, profiles, settings] = await Promise.all([
+  const [invoices, expenses, profiles, settings, facturas] = await Promise.all([
     db.invoices.toArray(),
     db.expenses.toArray(),
     db.profiles.toArray(),
     db.settings.toArray(),
+    db.facturas.toArray(),
   ]);
   const backup = {
     app: 'calculadora-autonomos',
-    version: 1,
+    version: 2,
     exportedAt: new Date().toISOString(),
     invoices,
     expenses,
     profiles,
     settings,
+    facturas,
   };
   return JSON.stringify(backup, null, 2);
 }
@@ -34,27 +36,30 @@ export async function importAll(json: string): Promise<void> {
   if (data.app !== 'calculadora-autonomos') {
     throw new Error('Este archivo no es una copia de seguridad de la Calculadora Autónomos.');
   }
-  await db.transaction('rw', db.invoices, db.expenses, db.profiles, db.settings, async () => {
+  await db.transaction('rw', db.invoices, db.expenses, db.profiles, db.settings, db.facturas, async () => {
     await Promise.all([
       db.invoices.clear(),
       db.expenses.clear(),
       db.profiles.clear(),
       db.settings.clear(),
+      db.facturas.clear(),
     ]);
     if (data.invoices?.length) await db.invoices.bulkAdd(data.invoices);
     if (data.expenses?.length) await db.expenses.bulkAdd(data.expenses);
     if (data.profiles?.length) await db.profiles.bulkAdd(data.profiles);
     if (data.settings?.length) await db.settings.bulkAdd(data.settings);
+    if (data.facturas?.length) await db.facturas.bulkAdd(data.facturas);
   });
 }
 
 export async function wipeAll(): Promise<void> {
-  await db.transaction('rw', db.invoices, db.expenses, db.profiles, db.settings, async () => {
+  await db.transaction('rw', db.invoices, db.expenses, db.profiles, db.settings, db.facturas, async () => {
     await Promise.all([
       db.invoices.clear(),
       db.expenses.clear(),
       db.profiles.clear(),
       db.settings.clear(),
+      db.facturas.clear(),
     ]);
   });
 }

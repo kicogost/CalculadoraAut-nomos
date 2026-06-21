@@ -7,12 +7,16 @@ import type {
   ProvisioningSettings,
   YearProfile,
 } from '../engine/types';
+import type { Factura, IssuerProfile } from '../types/factura';
+import { EMPTY_ISSUER } from '../types/factura';
+import { facturaToInvoiceFields } from '../lib/factura';
 
 export type Screen =
   | 'dashboard'
   | 'income'
   | 'expenses'
   | 'taxes'
+  | 'facturas'
   | 'profile'
   | 'settings';
 
@@ -37,6 +41,8 @@ interface StoreState {
   loaded: boolean;
   invoices: Invoice[];
   expenses: Expense[];
+  facturas: Factura[];
+  issuer: IssuerProfile;
   profiles: Record<number, YearProfile>;
   activeYear: number;
   provisioning: ProvisioningSettings;
@@ -59,6 +65,13 @@ interface StoreState {
   setProvisioning: (p: ProvisioningSettings) => Promise<void>;
   completeOnboarding: (profile: YearProfile) => Promise<void>;
 
+  setIssuer: (issuer: IssuerProfile) => Promise<void>;
+  saveFactura: (factura: Factura) => Promise<void>;
+  deleteFactura: (id: string) => Promise<void>;
+  /** Create/refresh the linked income Invoice from a factura (feeds the calculator). */
+  addFacturaToIncome: (factura: Factura) => Promise<void>;
+  removeFacturaFromIncome: (factura: Factura) => Promise<void>;
+
   refreshAfterImport: () => Promise<void>;
 }
 
@@ -78,6 +91,8 @@ export const useStore = create<StoreState>((set, get) => ({
   loaded: false,
   invoices: [],
   expenses: [],
+  facturas: [],
+  issuer: EMPTY_ISSUER,
   profiles: {},
   activeYear: 2026,
   provisioning: DEFAULT_PROVISIONING,
@@ -85,11 +100,12 @@ export const useStore = create<StoreState>((set, get) => ({
   screen: 'dashboard',
 
   async load() {
-    const [invoices, expenses, profileList, settings] = await Promise.all([
+    const [invoices, expenses, profileList, settings, facturas] = await Promise.all([
       db.invoices.toArray(),
       db.expenses.toArray(),
       db.profiles.toArray(),
       db.settings.get('app'),
+      db.facturas.toArray(),
     ]);
     const profiles: Record<number, YearProfile> = {};
     for (const p of profileList) profiles[p.year] = p;
@@ -98,6 +114,8 @@ export const useStore = create<StoreState>((set, get) => ({
       loaded: true,
       invoices,
       expenses,
+      facturas,
+      issuer: s.issuer ?? EMPTY_ISSUER,
       profiles,
       activeYear: s.activeYear,
       provisioning: s.provisioning ?? DEFAULT_PROVISIONING,
@@ -163,6 +181,60 @@ export const useStore = create<StoreState>((set, get) => ({
       onboardingDone: true,
       activeYear: profile.year,
       screen: 'dashboard',
+    });
+  },
+
+  async setIssuer(issuer) {
+    await persistSettings({ issuer });
+    set({ issuer });
+  },
+
+  async saveFactura(factura) {
+    await db.facturas.put(factura);
+    const exists = get().facturas.some((f) => f.id === factura.id);
+    set({
+      facturas: exists
+        ? get().facturas.map((f) => (f.id === factura.id ? factura : f))
+        : [...get().facturas, factura],
+    });
+    // Keep a linked income Invoice in sync if there is one.
+    if (factura.linkedInvoiceId) {
+      const fields = facturaToInvoiceFields(factura);
+      const inv: Invoice = { ...fields, id: factura.linkedInvoiceId };
+      await db.invoices.put(inv);
+      set({
+        invoices: get().invoices.map((i) => (i.id === inv.id ? inv : i)),
+      });
+    }
+  },
+
+  async deleteFactura(id) {
+    await db.facturas.delete(id);
+    set({ facturas: get().facturas.filter((f) => f.id !== id) });
+  },
+
+  async addFacturaToIncome(factura) {
+    const invoiceId = factura.linkedInvoiceId ?? newId();
+    const inv: Invoice = { ...facturaToInvoiceFields(factura), id: invoiceId };
+    await db.invoices.put(inv);
+    const linked = { ...factura, linkedInvoiceId: invoiceId };
+    await db.facturas.put(linked);
+    set({
+      invoices: get().invoices.some((i) => i.id === invoiceId)
+        ? get().invoices.map((i) => (i.id === invoiceId ? inv : i))
+        : [...get().invoices, inv],
+      facturas: get().facturas.map((f) => (f.id === factura.id ? linked : f)),
+    });
+  },
+
+  async removeFacturaFromIncome(factura) {
+    if (!factura.linkedInvoiceId) return;
+    await db.invoices.delete(factura.linkedInvoiceId);
+    const unlinked = { ...factura, linkedInvoiceId: undefined };
+    await db.facturas.put(unlinked);
+    set({
+      invoices: get().invoices.filter((i) => i.id !== factura.linkedInvoiceId),
+      facturas: get().facturas.map((f) => (f.id === factura.id ? unlinked : f)),
     });
   },
 
