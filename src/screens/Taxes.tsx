@@ -1,13 +1,17 @@
 import { useMemo } from 'react';
-import { useActiveProfile } from '../store/useStore';
+import { useActiveProfile, useStore } from '../store/useStore';
 import { useComputation } from '../hooks/useComputation';
-import { formatEur, formatPct, QUARTER_LABELS } from '../engine';
+import { formatEur, formatPct, getTaxConfig, QUARTER_LABELS, TAX_CONFIG_2026 } from '../engine';
 import { Badge, Card, InfoTip, SectionTitle } from '../components/ui';
+import { CasillasView } from '../components/CasillasView';
 import { buildObligations } from '../lib/obligations';
 import { formatISODate } from '../lib/dates';
 
 export function TaxesScreen() {
   const profile = useActiveProfile();
+  const invoices = useStore((s) => s.invoices);
+  const expenses = useStore((s) => s.expenses);
+  const cfg = getTaxConfig(profile.year) ?? TAX_CONFIG_2026;
   const { comp } = useComputation();
   const obligations = useMemo(() => buildObligations(comp), [comp]);
   const { irpf, modelo303, modelo130, modelo130Required: req, regularizacion: reg } = comp;
@@ -72,6 +76,9 @@ export function TaxesScreen() {
           })}
         </div>
       </div>
+
+      {/* Casilla-a-casilla: fill the official AEAT boxes */}
+      <CasillasView invoices={invoices} expenses={expenses} profile={profile} cfg={cfg} />
 
       {/* Modelo 130 flag */}
       <Card className="p-4">

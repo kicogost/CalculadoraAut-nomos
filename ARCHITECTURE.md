@@ -119,6 +119,9 @@ Server (Vercel, secret): `SUPABASE_SERVICE_ROLE_KEY`, `STRIPE_SECRET_KEY`,
 2. **Payments + entitlements** — Stripe Checkout + webhook + gating; Pro unlock +
    AI credits.
 3. **Verifactu submission** — the AEAT service (cert/apoderamiento). Flagship paid.
+   **Shared infrastructure with AEAT model filing** (303/130/… one-click submit) —
+   the certificate + web-service plumbing is built once and reused for both. See
+   `docs/FILING.md`.
 4. **Polish** — account deletion, EU region, privacy policy, affiliates page, Kit
    Digital eligibility (state subsidises the tool).
 
