@@ -17,7 +17,7 @@ Google Play, Reddit). Used to find Provisio's edge and steer the roadmap.
 | **Cuéntica** | autónomo-first (+ pequeñas empresas) | ❌ (15-day trial) | 9 / 19 / 29 / 59 / 129 | ◐ weak/manual | done-for-you (Tutelada €59) | ✅ (Fiscalidad tiers) | weak/manual bank sync, no mid-tier, no real mobile app |
 | **Declarando** | autónomo (asesoría fiscal) | ❌ | 29.90–49.90 | ◐ | ✅ they file (303/130/100) | ✅ (core model) | expensive/hidden upsells, bank-financed lock-in, AI support |
 | **Taxfix / TaxScouts** | autónomo (hybrid) | ❌ | (pack autónomos) | ✅ open banking | ✅ advisor files | ✅ (core model) | entries lock after sending to advisor; advisor-gated |
-| **Provisio** (us) | **autónomo only** | **✅ local-first** | **one-time €49 + €49/yr Verifactu** | planned (open banking) | self-file (casillas) → 1-click planned | ❌ (refer) | not yet hands-off (no bank sync / submission yet) |
+| **Provisio** (us) | **autónomo only** | ❌ (14-day trial) | **Core €79–89/yr · Automatización €149–199/yr** (see UNIT-ECONOMICS.md) | planned (open banking) | self-file (casillas) → 1-click planned | ❌ (refer) | not yet hands-off (no bank sync / submission yet) |
 
 ## Per-competitor notes
 
@@ -37,8 +37,8 @@ Google Play, Reddit). Used to find Provisio's edge and steer the roadmap.
 
 ## The patterns (every competitor's recurring complaints = our openings)
 
-1. **No free tier** (except Contasimple — and it's the buggiest/least secure). → our **free local-first core** stands alone.
-2. **Price increases / opaque upsells / features gated** — universal (Anfix, Quipu, Holded, Declarando). → **transparent one-time/cheap pricing, no hikes, no lock-in**.
+1. **Pricing is resented** — price hikes, opaque upsells, gated features (Anfix, Quipu, Holded, Declarando); only Contasimple is free and it's the buggiest/least secure. → **transparent, honest pricing, no surprise hikes, no lock-in** (trial-led, two simple tiers — see UNIT-ECONOMICS.md; a free tier doesn't pencil for paid acquisition, so we compete on honesty + value, not on "free").
+2. **Price increases / opaque upsells / features gated** — universal (Anfix, Quipu, Holded, Declarando). → **transparent pricing, no hikes, no lock-in**.
 3. **Support is slow / bot-led / degrading** — *every* paid tool. → fast, human, honest support is a real early wedge.
 4. **Bugs, downtime, AEAT files that don't work** (Anfix, Quipu, Contasimple). → **correctness + reliability** (tested engine, box-verified casillas, AEAT-vector-verified Verifactu).
 5. **Too broad / complex for a solo autónomo** (Holded "excesivo", Quipu "interfaz confusa", Anfix). → **purely autónomo, simple by subtraction**.
@@ -48,9 +48,26 @@ Google Play, Reddit). Used to find Provisio's edge and steer the roadmap.
 
 ## Our edge (where Provisio is genuinely different)
 
-The only product that combines: **autónomo-only focus + free local-first core + honest one-time/cheap pricing with no hikes + the "cuánto apartar / beneficio neto" hook + verified correctness + privacy.** No competitor has that bundle. The leaders out-*cover* us (bank sync, submission, broad models) but are broad, price-creeping, buggy, and slow-to-support; the advisor models (Declarando, Taxfix, Cuéntica-Tutelada) are pricier and lock you in.
+The only product that combines: **autónomo-only focus + radical simplicity + honest pricing with no hikes/lock-in + the "cuánto apartar / beneficio neto" hook + verified correctness + privacy.** No competitor has that bundle. The leaders out-*cover* us (bank sync, submission, broad models) but are broad, price-creeping, buggy, and slow-to-support; the advisor models (Declarando, Taxfix, Cuéntica-Tutelada) are pricier and lock you in.
 
-**Pricing context:** the market clusters at ~€9–€30/mo SaaS, advisory tiers €29–€59, done-for-you €49–€129/mo. Provisio's **one-time €49 + €49/yr Verifactu** is genuinely disruptive against monthly subscriptions the audience already resents — lean into it.
+**Pricing context:** the market clusters at ~€9–€30/mo SaaS, advisory tiers €29–€59, done-for-you €49–€129/mo. Provisio's plan: **no free tier** (it can't fund acquisition — see UNIT-ECONOMICS.md), a **14-day trial → Core €79–89/yr + Automatización €149–199/yr**, annual-billed, transparent, no hikes. That undercuts the monthly subscriptions the audience resents while staying viable for paid + organic growth.
+
+## Primary-data check (app-store reviews, ~Jun 2026)
+
+Pulled real Play Store reviews at scale (`tools/review-research/`) to ground the
+thesis instead of hand-reading a few. Confirms the bug/reliability opening:
+
+| Tool | N | Avg | % ≤2★ | Dominant complaints |
+|---|---|---|---|---|
+| **Anfix** | 55 | **2.65★** | 55% | bugs/crashes ("se cuelga", "no funciona"), **broken bank sync**, app unusable |
+| **Quipu** | 41 | 3.12★ | 41% | app barely works ("no puedes hacer casi nada"), photo upload, login |
+| Holded | 0 (TPV only) | — | — | web-first — no real mobile app |
+| Taxfix ES | 4 | 2.0★ | 75% | too new in ES |
+
+Caveat: **most autónomo SaaS is web-first**, so Play only gives big samples for
+mobile-first tools (TaxDown, a renta competitor, has 4.6k+). The web-first leaders'
+big corpora live on Trustpilot/Capterra — pull those from a residential IP / API (see
+`tools/review-research/README.md`).
 
 ## Roadmap moves (what this research says to build/do next)
 
@@ -62,4 +79,4 @@ The only product that combines: **autónomo-only focus + free local-first core +
 6. **Transparent pricing, no hikes, no lock-in, fast human support** — bake into positioning; it counters the #1 universal complaint and the lock-in models.
 
 ## Methodology note
-Researched via parallel subagents (now web-enabled — see `.claude/settings.json` allowlisting `WebFetch`/`WebSearch`). Trustpilot blocks automated fetch (403); its content came via search snippets + aggregators. Reddit-specific sentiment was thin for most tools. Add Billin, FacturaDirecta, Sage, or others here later using the same template.
+Researched via parallel subagents (now web-enabled — see `.claude/settings.json` allowlisting `WebFetch`/`WebSearch`) **plus** massive-sample app-store scraping (`tools/review-research/`). For bigger samples on the web-first leaders, add Trustpilot/Capterra via API or a residential IP (datacenter IPs get 403) — see that tool's README. Add Billin, FacturaDirecta, Sage, or others here later using the same template.
