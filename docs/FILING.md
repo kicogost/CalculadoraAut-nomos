@@ -24,7 +24,15 @@ pero parecen difíciles").
 - **Modelo 303** (IVA, régimen general): rate rows 01/02/03, 04/05/06, 07/08/09
   (base/tipo/cuota) · 27 total cuota devengada · 28/29 IVA deducible op. interiores
   · 45 total a deducir · 46 resultado régimen general (27−45) · 71 resultado ·
-  72 a compensar / 73 a devolver (4T).
+  72 a compensar / 73 a devolver (4T) · 120 operaciones no sujetas por localización
+  (export/EU services).
+- **Modelo 349** (recapitulativa UE): per-EU-client rows with base + clave S
+  (prestaciones de servicios); NIF-IVA prompted (not stored on income invoices).
+- **Modelo 390** (resumen anual IVA): devengado régimen ordinario 01/02 (4%), 03/04
+  (10%), 05/06 (21%) · 47 total cuotas · 48/49 deducible op. interiores corrientes ·
+  65 resultado régimen general · 86 resultado liquidación · 99 volumen régimen
+  general. (SII filers and quarterly simplificado/urban-rental-only filers are
+  exempt from 390.)
 
 **Known limitations (flagged in-app):**
 - Export (no sujeto) and intracom (UE) operations are **not** auto-placed into the
@@ -69,6 +77,10 @@ the AEAT already pre-fills most of it via **Renta WEB / datos fiscales**. Plan:
 help with the *rendimiento de actividades económicas* section + the annual set-aside,
 and export/guide into Renta WEB. Fully replacing Renta is the boundary where you'd
 need to be (or partner with) a gestoría.
+
+**Full scope in [`docs/MODELO-100.md`](./MODELO-100.md)** — three tiers: A (assist:
+"Resumen para tu Renta", recommended), B (box mapping, optional, per-year
+verification), C (file it — out of scope / gestoría territory).
 
 ## Why this ordering
 

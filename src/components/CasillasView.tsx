@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import { centsToEur, formatEur, QUARTER_LABELS } from '../engine';
 import type { Expense, Invoice, TaxConfig, YearProfile } from '../engine';
-import { modelo130Casillas, modelo303Casillas, modelo349Rows, type Casilla, type ModeloCasillas } from '../lib/casillas';
+import {
+  modelo130Casillas,
+  modelo303Casillas,
+  modelo349Rows,
+  modelo390Casillas,
+  type Casilla,
+  type ModeloCasillas,
+} from '../lib/casillas';
 import { Badge, Card, InfoTip, cx } from './ui';
 import { currentMonthForYear } from '../lib/dates';
 
@@ -10,7 +17,7 @@ function formNumber(cents: number): string {
   return centsToEur(cents).toFixed(2).replace('.', ',');
 }
 
-type Model = '303' | '130' | '349';
+type Model = '303' | '130' | '349' | '390';
 
 export function CasillasView({
   invoices,
@@ -31,7 +38,9 @@ export function CasillasView({
       ? modelo303Casillas(invoices, expenses, profile, cfg, quarter)
       : model === '130'
         ? modelo130Casillas(invoices, expenses, profile, cfg, quarter)
-        : null;
+        : model === '390'
+          ? modelo390Casillas(invoices, expenses, profile, cfg)
+          : null;
   const rows349 = model === '349' ? modelo349Rows(invoices, profile, quarter) : [];
   const total349 = rows349.reduce((s, r) => s + r.baseCents, 0);
 
@@ -50,12 +59,15 @@ export function CasillasView({
           <Seg active={model === '303'} onClick={() => setModel('303')}>303 (IVA)</Seg>
           <Seg active={model === '130'} onClick={() => setModel('130')}>130 (IRPF)</Seg>
           <Seg active={model === '349'} onClick={() => setModel('349')}>349 (UE)</Seg>
+          <Seg active={model === '390'} onClick={() => setModel('390')}>390 (anual)</Seg>
         </div>
-        <div className="inline-flex rounded-xl bg-surface-2 p-1">
-          {[1, 2, 3, 4].map((q) => (
-            <Seg key={q} active={quarter === q} onClick={() => setQuarter(q)}>{QUARTER_LABELS[q - 1]}</Seg>
-          ))}
-        </div>
+        {model !== '390' && (
+          <div className="inline-flex rounded-xl bg-surface-2 p-1">
+            {[1, 2, 3, 4].map((q) => (
+              <Seg key={q} active={quarter === q} onClick={() => setQuarter(q)}>{QUARTER_LABELS[q - 1]}</Seg>
+            ))}
+          </div>
+        )}
       </div>
 
       {data && (

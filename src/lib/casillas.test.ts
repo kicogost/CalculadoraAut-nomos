@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { eurToCents, TAX_CONFIG_2026 } from '../engine';
 import type { Expense, Invoice, PlaceOfSupply, YearProfile } from '../engine';
-import { modelo130Casillas, modelo303Casillas, modelo349Rows, type Casilla } from './casillas';
+import { modelo130Casillas, modelo303Casillas, modelo349Rows, modelo390Casillas, type Casilla } from './casillas';
 
 const cfg = TAX_CONFIG_2026;
 let seq = 0;
@@ -89,6 +89,23 @@ describe('Modelo 349 rows', () => {
     expect(rows[0].clientName).toBe('ACME GmbH');
     expect(rows[0].clave).toBe('S');
     expect(rows[0].baseCents).toBe(eurToCents(6500)); // 5000 + 1500 grouped
+  });
+});
+
+describe('Modelo 390 (resumen anual IVA)', () => {
+  it('aggregates the year: 21% base/cuota → 05/06, total 47, deducible 48/49, resultado 65', () => {
+    // 4 quarterly domestic invoices of 1.000 € at 21% (annual base 4.000, IVA 840)
+    const invoices = [1, 4, 7, 10].map((m) => inv(m, 1000, 'domestic_es', 21, 15));
+    const expenses = [exp(3, 242, 42), exp(9, 121, 21)]; // input IVA 63
+    const r = modelo390Casillas(invoices, expenses, profile(), cfg);
+    const rows = allRows(r.groups);
+    expect(box(rows, 5)!.cents).toBe(eurToCents(4000)); // base 21%
+    expect(box(rows, 6)!.cents).toBe(eurToCents(840)); // cuota 21%
+    expect(box(rows, 47)!.cents).toBe(eurToCents(840)); // total devengada
+    expect(box(rows, 49)!.cents).toBe(eurToCents(63)); // deducible
+    expect(box(rows, 65)!.cents).toBe(eurToCents(840 - 63)); // resultado
+    expect(box(rows, 99)!.cents).toBe(eurToCents(4000)); // volumen régimen general
+    expect(r.resultCents).toBe(eurToCents(777));
   });
 });
 

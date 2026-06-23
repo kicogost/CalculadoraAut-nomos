@@ -169,6 +169,106 @@ export function modelo303Casillas(
   };
 }
 
+// Modelo 390 régimen ordinario devengado: rate → [base casilla, cuota casilla].
+const M390_DEVENGADO: Record<number, [number, number]> = {
+  4: [1, 2],
+  10: [3, 4],
+  21: [5, 6],
+};
+
+/**
+ * Modelo 390 (resumen anual de IVA) — annual summary, common-case boxes for an
+ * autónomo en régimen general. Box numbers verified vs the AEAT 390 instructions.
+ * Note: SII filers and (quarterly) régimen-simplificado/urban-rental-only filers
+ * are EXEMPT from 390. The form has many more boxes for special regimes /
+ * modifications not covered here.
+ */
+export function modelo390Casillas(
+  invoices: Invoice[],
+  userExpenses: Expense[],
+  profile: YearProfile,
+  _cfg: TaxConfig,
+): ModeloCasillas {
+  const { recognitionBasis: basis, year } = profile;
+
+  const byRate = new Map<number, { base: Cents; cuota: Cents }>();
+  let regGeneralBase = 0;
+  for (const inv of invoices) {
+    if (recognitionMonth(inv, basis, year) === null) continue;
+    const cuota = outputIva(inv);
+    if (cuota <= 0) continue;
+    regGeneralBase += inv.amountCents;
+    const cur = byRate.get(inv.ivaRate) ?? { base: 0, cuota: 0 };
+    cur.base += inv.amountCents;
+    cur.cuota += cuota;
+    byRate.set(inv.ivaRate, cur);
+  }
+
+  const devengadoRows: Casilla[] = [];
+  let totalDevengado = 0;
+  let unmappedRate = false;
+  for (const rate of [21, 10, 4]) {
+    const v = byRate.get(rate);
+    if (!v) continue;
+    const [baseN, cuotaN] = M390_DEVENGADO[rate];
+    totalDevengado += v.cuota;
+    devengadoRows.push(
+      { n: baseN, label: `Base imponible (${rate}%)`, cents: v.base },
+      { n: cuotaN, label: `Cuota (${rate}%)`, cents: v.cuota },
+    );
+  }
+  for (const rate of byRate.keys()) if (!M390_DEVENGADO[rate]) unmappedRate = true;
+  devengadoRows.push({ n: 47, label: 'Total cuotas IVA y recargo devengadas', cents: totalDevengado });
+
+  // Deducible operaciones interiores corrientes (annual).
+  let deduBase = 0;
+  let deduCuota = 0;
+  for (const exp of userExpenses) {
+    const [ey] = exp.date.split('-').map(Number);
+    if (ey !== year) continue;
+    if (exp.inputIvaCents > 0) {
+      deduBase += exp.amountCents - exp.inputIvaCents;
+      deduCuota += exp.inputIvaCents;
+    }
+  }
+  const resultado = totalDevengado - deduCuota;
+
+  const notes = [
+    'Resumen anual: casillas principales del régimen general. El 390 tiene más casillas para regímenes especiales y modificaciones.',
+    'No presentan 390: incluidos en SII, y (en trimestral) quienes solo tributan en régimen simplificado o arrendamiento de inmuebles urbanos.',
+  ];
+  if (unmappedRate) notes.push('Hay operaciones a tipos distintos de 4/10/21%: revisa sus casillas específicas.');
+
+  return {
+    model: 'Modelo 390 · resumen anual IVA',
+    period: `${year} (anual)`,
+    groups: [
+      { title: 'IVA devengado (régimen ordinario)', rows: devengadoRows },
+      {
+        title: 'IVA deducible (operaciones interiores corrientes)',
+        rows: [
+          { n: 48, label: 'Base imponible', cents: deduBase },
+          { n: 49, label: 'Cuota deducible', cents: deduCuota },
+        ],
+      },
+      {
+        title: 'Resultado',
+        rows: [
+          { n: 65, label: 'Resultado régimen general', cents: resultado },
+          { n: 86, label: 'Resultado de la liquidación anual', cents: resultado },
+        ],
+      },
+      {
+        title: 'Volumen de operaciones',
+        rows: [{ n: 99, label: 'Operaciones en régimen general (base)', cents: regGeneralBase }],
+      },
+    ],
+    resultCents: resultado,
+    resultLabel: 'Resultado anual (informativo)',
+    notes,
+  };
+}
+
 export interface Modelo349Row {
   clientName: string;
   baseCents: Cents;
