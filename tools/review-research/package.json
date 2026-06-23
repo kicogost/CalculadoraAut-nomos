@@ -1,0 +1,16 @@
+{
+  "name": "review-research",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Massive-sample competitor review research (Google Play + Apple App Store + Reddit archive + Trustpilot)",
+  "scripts": {
+    "multi": "node multi-source.mjs",
+    "trustpilot": "node trustpilot.mjs",
+    "play": "node review-research.mjs"
+  },
+  "dependencies": {
+    "google-play-scraper": "^10.1.3",
+    "playwright": "^1.61.0"
+  }
+}

@@ -9,9 +9,17 @@ a handful of hand-read reviews.
 ```bash
 cd tools/review-research
 npm install
-node multi-source.mjs   # Google Play + Apple App Store + Reddit archive (runs anywhere)
-node trustpilot.mjs     # Trustpilot — RUN FROM A RESIDENTIAL IP (403 from datacenter/CI)
+npx playwright install chromium   # one-time, for trustpilot.mjs
+node multi-source.mjs   # Google Play + Apple App Store + Reddit archive
+node trustpilot.mjs     # Trustpilot via real headless Chromium (see note below)
 ```
+
+**Trustpilot note:** Trustpilot bot-blocks curl/fetch with a 403 **even from a
+residential IP** (it's TLS/headless fingerprinting, not IP reputation — verified: our
+egress was a Telefónica home IP and still got 403). The fix is a real browser:
+`trustpilot.mjs` drives Playwright Chromium, masks `navigator.webdriver`, and
+**reloads on the first 403** (the 403 sets a Cloudflare clearance cookie; the reload
+returns 200). This works from a normal home connection.
 
 (`review-research.mjs` is the original Play-only script; `multi-source.mjs`
 supersedes it.) Shared config + theme map + analysis live in `lib.mjs` — edit the
@@ -72,9 +80,26 @@ Confirms the COMPETITORS.md thesis with primary data: the leaders' apps are bugg
 poorly rated; price hikes/upsells and degrading (now AI-only) support are real,
 recurring pains; bank-sync reliability is a genuine wedge.
 
+### Trustpilot run (service/web sentiment, ~1,190 sampled)
+
+| Tool | TrustScore | total | Note |
+|---|---|---|---|
+| Cuéntica | **4.9** | 199 | genuinely loved (support, ease) |
+| Anfix | 4.5 | 60 | small base |
+| TaxDown | 4.4 | **9,554** | huge base |
+| Holded | 4.2 | **2,382** | service ok despite 2.26★ app |
+| Quipu / Declarando / Renn | 4.1 | 292 / **3,714** / 13 | Declarando: lock-in complaints; Renn: tiny |
+| Contasimple | **3.8** | 127 | lowest — support/bugs/price |
+
+**The key cross-source insight:** mobile-app ratings (≈2.3–3.2★) are far below
+Trustpilot service ratings (≈3.8–4.9). App stores capture daily-use bugs; Trustpilot
+(solicited/curated) captures overall service. Trust the signals that agree on both —
+Contasimple weakest, Cuéntica strongest, price-hikes/lock-in recurring.
+
 **Known caveats:** Reddit substring search matches common words — `declarando` (verb)
 and short brand names produce false positives; tighten aliases or rely on Trustpilot
-for those. Cuéntica & Declarando are web-first (no app) → Trustpilot/Capterra only.
+for those. Trustpilot is solicited/curated → upward-biased. App-store and Trustpilot
+measure different things (app vs service) — report both, don't average them.
 
 ## Extending
 

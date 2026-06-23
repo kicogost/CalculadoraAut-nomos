@@ -12,6 +12,7 @@ export const COMPETITORS = [
   { name: 'Cuéntica',     play: null,                       apple: null,       trustpilot: 'cuentica.com',    aliases: ['cuentica', 'cuéntica'] },
   { name: 'Declarando',   play: null,                       apple: null,       trustpilot: 'declarando.es',   aliases: ['declarando'] },
   { name: 'TaxDown',      play: 'com.taxdown.bave.android', apple: 1503998673, trustpilot: 'taxdown.es',      aliases: ['taxdown'] },
+  { name: 'Renn',         play: null,                       apple: null,       trustpilot: 'getrenn.com',     aliases: ['getrenn'] }, // 'renn' too noisy for reddit
 ];
 
 // Spanish-language subreddits where autónomos discuss these tools.

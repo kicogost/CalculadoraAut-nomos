@@ -17,6 +17,7 @@ Google Play, Reddit). Used to find Provisio's edge and steer the roadmap.
 | **Cuéntica** | autónomo-first (+ pequeñas empresas) | ❌ (15-day trial) | 9 / 19 / 29 / 59 / 129 | ◐ weak/manual | done-for-you (Tutelada €59) | ✅ (Fiscalidad tiers) | weak/manual bank sync, no mid-tier, no real mobile app |
 | **Declarando** | autónomo (asesoría fiscal) | ❌ | 29.90–49.90 | ◐ | ✅ they file (303/130/100) | ✅ (core model) | expensive/hidden upsells, bank-financed lock-in, AI support |
 | **Taxfix / TaxScouts** | autónomo (hybrid) | ❌ | (pack autónomos) | ✅ open banking | ✅ advisor files | ✅ (core model) | entries lock after sending to advisor; advisor-gated |
+| **Renn** (getrenn.com) | autónomo + SL | ✅ €0 (Verifactu invoicing) | 0 / 15 / 50 / 70 (filing from €50) | ✅ (+ Gmail/WhatsApp capture) | ✅ human accountant (paid tiers) | ✅ (WhatsApp, ~1h) | very new/tiny (~2 ppl, ~$120K, ~12 reviews); no mobile app; no independent validation |
 | **Provisio** (us) | **autónomo only** | ❌ (14-day trial) | **Core €79–89/yr · Automatización €149–199/yr** (see UNIT-ECONOMICS.md) | planned (open banking) | self-file (casillas) → 1-click planned | ❌ (refer) | not yet hands-off (no bank sync / submission yet) |
 
 ## Per-competitor notes
@@ -35,6 +36,8 @@ Google Play, Reddit). Used to find Provisio's edge and steer the roadmap.
 
 **Taxfix / TaxScouts** (researched earlier, see INSIGHTS.md) — hybrid software + human asesor who files; AI receipt scan + bank import; Verifactu issuing. Entries **lock once sent to the advisor**; advisor-gated, no in-app set-aside.
 
+**Renn** (getrenn.com) — *the most direct "modern gestoría" competitor.* Hybrid **software + managed gestoría** ("platform plus real accountants"), pivoted from a digital-nomad tax-AI concept into Spain-autónomos. Positioning: **"Self-Driving Finance. Built for Tax Savings."** / *"Proactive accounting for freelancers"*, explicitly anti-gestor ("most gestors file and wait for you to ask — renn proactively flags every deduction"), headline claim **"save €4.500/yr on average"** (their own, unverified). Features: Verifactu invoicing **on the free tier**, expense capture via **WhatsApp + Gmail + bank** connection, deduction flagging, real-time IVA/SS/IRPF balances + P&L, **free alta + gestor-switching**, and on paid tiers a **dedicated human accountant who reviews and files 303/130/390/111/349/100** (human-reviewed, not fully automated). Pricing (monthly, no annual shown): Copilot light **€0** (25 facturas/mo, no filing), Copilot **€15** (software only, no filing), Autopilot light **€50** (alta + accountant + filing), Autopilot **€70** (unlimited); SL track up to €150–170/mo. **Reviews: ~12 on Trustpilot, ~5★, all first-party-adjacent — no independent or critical data, no Reddit footprint, absent from comparison roundups.** Traction: founded ~2024, **~$120K (Techstars/pre-seed), ~2 people**, Barcelona. **Weaknesses / our openings:** no native mobile app; no explicit "cuánto apartar" hook (they show balances but haven't packaged *the* number); their model is the **opposite of local-first/privacy** (must hand bank + Gmail + books to humans); real "set-and-forget" costs **€50–70/mo** (free/€15 tiers don't file) with some price inconsistencies (€115 vs €150) and sales-call tiers; correctness leans on **human review, not a verifiable engine**; tiny team + near-zero brand moat. Their one strong overlap with us is the **free Verifactu-invoicing on-ramp** — they already occupy it.
+
 ## The patterns (every competitor's recurring complaints = our openings)
 
 1. **Pricing is resented** — price hikes, opaque upsells, gated features (Anfix, Quipu, Holded, Declarando); only Contasimple is free and it's the buggiest/least secure. → **transparent, honest pricing, no surprise hikes, no lock-in** (trial-led, two simple tiers — see UNIT-ECONOMICS.md; a free tier doesn't pencil for paid acquisition, so we compete on honesty + value, not on "free").
@@ -48,7 +51,9 @@ Google Play, Reddit). Used to find Provisio's edge and steer the roadmap.
 
 ## Our edge (where Provisio is genuinely different)
 
-The only product that combines: **autónomo-only focus + radical simplicity + honest pricing with no hikes/lock-in + the "cuánto apartar / beneficio neto" hook + verified correctness + privacy.** No competitor has that bundle. The leaders out-*cover* us (bank sync, submission, broad models) but are broad, price-creeping, buggy, and slow-to-support; the advisor models (Declarando, Taxfix, Cuéntica-Tutelada) are pricier and lock you in.
+The only product that combines: **autónomo-only focus + radical simplicity + honest pricing with no hikes/lock-in + the "cuánto apartar / beneficio neto" hook + verified correctness + privacy.** No competitor has that bundle. The leaders out-*cover* us (bank sync, submission, broad models) but are broad, price-creeping, buggy, and slow-to-support; the advisor models (Declarando, Taxfix, Cuéntica-Tutelada, **Renn**) are pricier and lock you in.
+
+**Renn is the closest threat to watch** — autónomo-focused, free Verifactu invoicing, modern "self-driving finance" positioning. But it competes on the *opposite axis*: it monetizes **human accountants** (real filing starts at €50–70/mo) and requires handing over bank + Gmail + books. We differentiate on **price (no per-customer human cost), privacy/local-first, a verifiable tax engine (not human review), mobile, and the sharp "cuánto apartar" hook Renn hasn't packaged.** The one place to defend is the **free Verifactu-invoicing on-ramp** they already own.
 
 **Pricing context:** the market clusters at ~€9–€30/mo SaaS, advisory tiers €29–€59, done-for-you €49–€129/mo. Provisio's plan: **no free tier** (it can't fund acquisition — see UNIT-ECONOMICS.md), a **14-day trial → Core €79–89/yr + Automatización €149–199/yr**, annual-billed, transparent, no hikes. That undercuts the monthly subscriptions the audience resents while staying viable for paid + organic growth.
 
@@ -67,13 +72,46 @@ strongly confirms the bug/reliability, price-hike, and degrading-support opening
 | **TaxDown** | 5,198 | 3.89★ | 26% | **AI-only support** ("hablas con una IA que no se entera"), "envían tu declaración sin tu consentimiento", upsell pressure |
 | Cuéntica / Declarando | web-first | — | — | no app → pull from Trustpilot (run `trustpilot.mjs` locally; 403 from datacenter) |
 
-Takeaways with primary backing: (1) the leaders' **apps are genuinely bad** (Holded
-2.26★/68% neg, Anfix 2.41★/59%); (2) **price hikes/upsells are documented, not
-anecdotal** (Contasimple 9→18€, Holded 200€/mo gate); (3) **support is degrading to
-AI/bots** (TaxDown). All three are our openings: reliability, honest pricing, real
-support. Caveat: most autónomo SaaS is web-first, so app stores only give big samples
-for mobile-first tools (TaxDown 5k+); Reddit substring search needs tight aliases
-("declarando" = the verb). See `tools/review-research/README.md` + `last-run.md`.
+### Trustpilot (overall service/web, ~1,190 reviews sampled; run via Playwright)
+
+Trustpilot is **solicited and curated** (firms invite happy customers, can flag
+negatives) → scores skew high; read it as the *service/web* experience, not the app.
+
+| Tool | TrustScore | total reviews | % ≤2★ (sampled) | Top ≤2★ complaint themes |
+|---|---|---|---|---|
+| **Cuéntica** | **4.9** | 199 | **2%** | almost none — genuinely loved (support, ease) |
+| **Anfix** | 4.5 | 60 | 13% | (small base) |
+| **TaxDown** | 4.4 | **9,554** | 23% | tax-result disappointment, support, price |
+| **Declarando** | 4.1 | **3,714** | 13% | **permanencia/lock-in (14)**, tax-result (15), price (13), support (11) |
+| **Renn** | 4.1 | **13** | ~0% | none surfaced — tiny, first-party-adjacent sample |
+| **Holded** | 4.2 | **2,382** | 17% | bugs, price |
+| **Quipu** | 4.1 | 292 | 17% | app/bugs, price |
+| **Contasimple** | **3.8** (lowest) | 127 | 38% | **support (19), bugs (18)**, facturación (17), price (13) |
+
+### The honest synthesis (where the two sources disagree, and why)
+
+The big sample *corrected* an earlier overclaim. There's a **wide gap between the
+mobile-app rating and the service rating**: Anfix 2.41★ app vs 4.5 Trustpilot; Holded
+2.26★ app vs 4.2. The defensible read:
+- **The mobile apps are genuinely bad** (daily-use pain: crashes, broken sync) — a
+  real wedge, since we can be mobile-reliable.
+- **The overall service rates OK-to-good on (upward-biased) Trustpilot** — so "they're
+  terrible" is wrong; compete on *specifics*, not a blanket quality claim.
+- **Consistent signals across both sources** are the trustworthy ones: **Contasimple
+  is weakest on both** (3.8 TP, 2.85 app — support/bugs/price-hikes, post-Cegid
+  decline); **Cuéntica is strongest on service** (4.9, support + ease — a genuinely
+  hard act to beat there); **price hikes/upsells** recur (Contasimple 9→18€, Holded
+  200€/mo gate); **Declarando's lock-in/permanencia** is a documented top complaint;
+  **TaxDown's AI-only support** draws fire despite a 4.4 score.
+
+Our openings, re-grounded: **mobile reliability, honest pricing + no lock-in, privacy,
+and the "cuánto apartar" hook** — *not* a blanket "competitors are bad" (the data
+doesn't support that). Beating Cuéntica on service warmth is the hardest part.
+
+Caveats: most autónomo SaaS is web-first, so app stores only sample mobile-first tools
+(TaxDown 5k+); Reddit substring search needs tight aliases ("declarando" = the verb);
+Trustpilot is solicited/curated. Sources + raw data: `tools/review-research/README.md`,
+`last-run.md`, `last-run-trustpilot.md`.
 
 ## Roadmap moves (what this research says to build/do next)
 
