@@ -52,22 +52,28 @@ The only product that combines: **autónomo-only focus + radical simplicity + ho
 
 **Pricing context:** the market clusters at ~€9–€30/mo SaaS, advisory tiers €29–€59, done-for-you €49–€129/mo. Provisio's plan: **no free tier** (it can't fund acquisition — see UNIT-ECONOMICS.md), a **14-day trial → Core €79–89/yr + Automatización €149–199/yr**, annual-billed, transparent, no hikes. That undercuts the monthly subscriptions the audience resents while staying viable for paid + organic growth.
 
-## Primary-data check (app-store reviews, ~Jun 2026)
+## Primary-data check (multi-source, ~Jun 2026) — ~5,640 data points
 
-Pulled real Play Store reviews at scale (`tools/review-research/`) to ground the
-thesis instead of hand-reading a few. Confirms the bug/reliability opening:
+Pulled real reviews at scale via `tools/review-research/` (Google Play + Apple App
+Store + Reddit archive) to ground the thesis instead of hand-reading a few. It
+strongly confirms the bug/reliability, price-hike, and degrading-support openings:
 
-| Tool | N | Avg | % ≤2★ | Dominant complaints |
+| Tool | N | Avg | % ≤2★ | Dominant complaints (verbatim signal) |
 |---|---|---|---|---|
-| **Anfix** | 55 | **2.65★** | 55% | bugs/crashes ("se cuelga", "no funciona"), **broken bank sync**, app unusable |
-| **Quipu** | 41 | 3.12★ | 41% | app barely works ("no puedes hacer casi nada"), photo upload, login |
-| Holded | 0 (TPV only) | — | — | web-first — no real mobile app |
-| Taxfix ES | 4 | 2.0★ | 75% | too new in ES |
+| **Holded** | 138 | **2.26★** | **68%** | bugs/blank screens, **price jump "200€/mes"** to unlock features, broken scanner |
+| **Anfix** | 98 | **2.41★** | 59% | crashes ("se cuelga"), **broken bank sync** ("conexión con el banco… imposible trabajar"), app unusable |
+| **Contasimple** | 68 | 2.85★ | 46% | **"Cegid se ha cargado contasimple"**, price hikes ("empecé pagando 9€… ya van por 18€"), "atención al cliente pésimo" |
+| **Quipu** | 110 | 3.15★ | 44% | app barely works ("no puedes hacer casi nada"), photo upload, login |
+| **TaxDown** | 5,198 | 3.89★ | 26% | **AI-only support** ("hablas con una IA que no se entera"), "envían tu declaración sin tu consentimiento", upsell pressure |
+| Cuéntica / Declarando | web-first | — | — | no app → pull from Trustpilot (run `trustpilot.mjs` locally; 403 from datacenter) |
 
-Caveat: **most autónomo SaaS is web-first**, so Play only gives big samples for
-mobile-first tools (TaxDown, a renta competitor, has 4.6k+). The web-first leaders'
-big corpora live on Trustpilot/Capterra — pull those from a residential IP / API (see
-`tools/review-research/README.md`).
+Takeaways with primary backing: (1) the leaders' **apps are genuinely bad** (Holded
+2.26★/68% neg, Anfix 2.41★/59%); (2) **price hikes/upsells are documented, not
+anecdotal** (Contasimple 9→18€, Holded 200€/mo gate); (3) **support is degrading to
+AI/bots** (TaxDown). All three are our openings: reliability, honest pricing, real
+support. Caveat: most autónomo SaaS is web-first, so app stores only give big samples
+for mobile-first tools (TaxDown 5k+); Reddit substring search needs tight aliases
+("declarando" = the verb). See `tools/review-research/README.md` + `last-run.md`.
 
 ## Roadmap moves (what this research says to build/do next)
 
