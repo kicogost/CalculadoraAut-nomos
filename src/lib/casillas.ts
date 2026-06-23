@@ -66,13 +66,13 @@ export function modelo303Casillas(
 
   // IVA devengado, grouped by rate (descending) → the three régimen-general rows.
   const byRate = new Map<number, { base: Cents; cuota: Cents }>();
-  let exportSeen = false;
-  let euSeen = false;
+  let exportBase = 0; // non_eu_export (services → no sujeto por localización)
+  let euBase = 0; // eu_b2b (no sujeto por localización + Modelo 349)
   for (const inv of invoices) {
     const m = recognitionMonth(inv, basis, year);
     if (m === null || quarterOfMonth(m) !== quarter) continue;
-    if (inv.placeOfSupply === 'non_eu_export') exportSeen = true;
-    if (inv.placeOfSupply === 'eu_b2b') euSeen = true;
+    if (inv.placeOfSupply === 'non_eu_export') exportBase += inv.amountCents;
+    if (inv.placeOfSupply === 'eu_b2b') euBase += inv.amountCents;
     const cuota = outputIva(inv);
     if (cuota <= 0) continue;
     const cur = byRate.get(inv.ivaRate) ?? { base: 0, cuota: 0 };
@@ -80,6 +80,7 @@ export function modelo303Casillas(
     cur.cuota += cuota;
     byRate.set(inv.ivaRate, cur);
   }
+  const noSujetaBase = exportBase + euBase;
   const rates = [...byRate.keys()].sort((a, b) => b - a).slice(0, 3);
 
   const devengadoRows: Casilla[] = [];
@@ -113,14 +114,14 @@ export function modelo303Casillas(
   const resultado = totalDevengado - deduCuota;
 
   const notes: string[] = [];
-  if (exportSeen) {
+  if (euBase > 0) {
     notes.push(
-      'Tienes operaciones fuera de la UE (no sujetas): su base va en casillas informativas (p. ej. 120/123), no en el IVA devengado. Revísalo.',
+      'Las operaciones intracomunitarias (UE) van además en el Modelo 349 (clave S, prestaciones de servicios), con el NIF-IVA del cliente.',
     );
   }
-  if (euSeen) {
+  if (exportBase > 0) {
     notes.push(
-      'Tienes operaciones intracomunitarias (UE, inversión del sujeto pasivo): se informan también en el Modelo 349 y en casillas específicas del 303. Revísalo.',
+      'Servicios fuera de la UE: no sujetos por reglas de localización → casilla 120. Si fueran exportaciones de bienes, irían en la casilla 60.',
     );
   }
   if (resultado < 0) {
@@ -131,31 +132,67 @@ export function modelo303Casillas(
     );
   }
 
+  const groups: CasillaGroup[] = [
+    { title: 'IVA devengado (régimen general)', rows: devengadoRows },
+    {
+      title: 'IVA deducible (operaciones interiores corrientes)',
+      rows: [
+        { n: 28, label: 'Base imponible', cents: deduBase },
+        { n: 29, label: 'Cuota deducible', cents: deduCuota },
+        { n: 45, label: 'Total a deducir', cents: deduCuota },
+      ],
+    },
+    {
+      title: 'Resultado',
+      rows: [
+        { n: 46, label: 'Resultado régimen general (27 − 45)', cents: resultado },
+        { n: 71, label: 'Resultado de la autoliquidación', cents: resultado },
+      ],
+    },
+  ];
+  // Información adicional: operaciones no sujetas por reglas de localización
+  // (servicios a clientes UE y de fuera de la UE).
+  if (noSujetaBase > 0) {
+    groups.push({
+      title: 'Información adicional (operaciones no sujetas por localización)',
+      rows: [{ n: 120, label: 'Operaciones no sujetas por reglas de localización', cents: noSujetaBase }],
+    });
+  }
+
   return {
     model: 'Modelo 303 · IVA',
     period: `${QUARTER_LABELS[quarter - 1]} ${year}`,
-    groups: [
-      { title: 'IVA devengado (régimen general)', rows: devengadoRows },
-      {
-        title: 'IVA deducible (operaciones interiores corrientes)',
-        rows: [
-          { n: 28, label: 'Base imponible', cents: deduBase },
-          { n: 29, label: 'Cuota deducible', cents: deduCuota },
-          { n: 45, label: 'Total a deducir', cents: deduCuota },
-        ],
-      },
-      {
-        title: 'Resultado',
-        rows: [
-          { n: 46, label: 'Resultado régimen general (27 − 45)', cents: resultado },
-          { n: 71, label: 'Resultado de la autoliquidación', cents: resultado },
-        ],
-      },
-    ],
+    groups,
     resultCents: resultado,
     resultLabel: resultado >= 0 ? 'A ingresar (casilla 71)' : 'A compensar/devolver',
     notes,
   };
+}
+
+export interface Modelo349Row {
+  clientName: string;
+  baseCents: Cents;
+  clave: string;
+}
+
+/**
+ * Modelo 349 (recapitulativa intracomunitaria) for one quarter: one row per EU
+ * B2B client with the base and clave S (prestaciones de servicios). The client's
+ * NIF-IVA must be added by the user (not stored on income invoices).
+ */
+export function modelo349Rows(invoices: Invoice[], profile: YearProfile, quarter: number): Modelo349Row[] {
+  const { recognitionBasis: basis, year } = profile;
+  const byClient = new Map<string, number>();
+  for (const inv of invoices) {
+    if (inv.placeOfSupply !== 'eu_b2b') continue;
+    const m = recognitionMonth(inv, basis, year);
+    if (m === null || quarterOfMonth(m) !== quarter) continue;
+    const name = inv.clientName.trim() || 'Cliente UE';
+    byClient.set(name, (byClient.get(name) ?? 0) + inv.amountCents);
+  }
+  return [...byClient.entries()]
+    .map(([clientName, baseCents]) => ({ clientName, baseCents, clave: 'S' }))
+    .sort((a, b) => b.baseCents - a.baseCents);
 }
 
 /** Modelo 130 (pago fraccionado IRPF) — estimación directa, for one quarter. */

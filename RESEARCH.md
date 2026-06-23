@@ -285,8 +285,20 @@ Source: AEAT "Características del QR y especificaciones del servicio de cotejo"
   top of the invoice. Header text above: **"QR tributario:"**; below (verifiable systems):
   **"Factura verificable en la sede electrónica de la AEAT"** or **"VERI*FACTU"**.
 
-### 8.3 Not implemented (needs certificate + AEAT web service)
+### 8.3 Submission — researched, NOT implemented (needs certificate + preproducción testing)
 
-Submission/remisión (the online VERI*FACTU flow or the SII-like XML POST), the registro de evento, and
-the cancellation (anulación) submission. The huella for anulación is supported in the spec but not
-wired into the UI (alta only).
+The submission (remisión) is a SOAP 1.1 web service. **Spec located, but not built**: the request XML
+must validate against the AEAT XSDs and be tested in preproducción with a certificate — neither of
+which can be done from here, so we did not ship guessed XML.
+
+- **Web service description:** AEAT "Veri-Factu_Descripcion_SWeb.pdf" (static_files/AEAT_Desarrolladores/EEDD/IVA/VERI-FACTU/).
+- **Schemas (XSD):** `SuministroInformacion.xsd`, `SuministroLR.xsd`, `RespuestaSuministro.xsd`,
+  `xmldsig-core-schema.xsd` (mirrored at github.com/hectorsipe/aeat-verifactu). Operation/message:
+  `RegFactuSistemaFacturacion` (input) → `RespuestaRegFactuSistemaFacturacion`.
+- **Pre-production SOAP endpoint:** `https://prewww1.aeat.es/wlpl/TIKE-CONT/ws/SistemaFacturacion/VerifactuSOAP`.
+- **Transport:** HTTPS, SOAP 1.1 document mode, UTF-8; client X.509 certificate (mutual TLS).
+- **Still needed to build it:** register the `SistemaInformatico` block (software id/version/instalación),
+  generate the `RegistroAlta` XML in exact XSD order (huella/QR already done — `src/lib/verifactu.ts`),
+  sign where required, and validate end-to-end in preproducción. Plus registro de evento and anulación.
+
+The huella for anulación is in the spec but not wired into the UI (alta only).

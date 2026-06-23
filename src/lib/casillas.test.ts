@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { eurToCents, TAX_CONFIG_2026 } from '../engine';
 import type { Expense, Invoice, PlaceOfSupply, YearProfile } from '../engine';
-import { modelo130Casillas, modelo303Casillas, type Casilla } from './casillas';
+import { modelo130Casillas, modelo303Casillas, modelo349Rows, type Casilla } from './casillas';
 
 const cfg = TAX_CONFIG_2026;
 let seq = 0;
@@ -53,14 +53,42 @@ describe('Modelo 303 casillas', () => {
     expect(r.resultCents).toBe(eurToCents(168));
   });
 
-  it('export user: no output IVA → 27 = 0, negative result flagged', () => {
+  it('export user: no output IVA → 27 = 0, base in casilla 120, negative result', () => {
     const invoices = [inv(2, 3000, 'non_eu_export')];
     const expenses = [exp(2, 121, 21)];
     const r = modelo303Casillas(invoices, expenses, profile(), cfg, 1);
     const rows = allRows(r.groups);
     expect(box(rows, 27)!.cents).toBe(0);
+    expect(box(rows, 120)!.cents).toBe(eurToCents(3000)); // no sujeta por localización
     expect(r.resultCents).toBe(-eurToCents(21));
-    expect(r.notes.join(' ')).toMatch(/no sujetas|compensar/i);
+    expect(r.notes.join(' ')).toMatch(/localización|60/);
+  });
+
+  it('EU B2B: base in casilla 120 and a Modelo 349 note', () => {
+    const invoices = [inv(2, 5000, 'eu_b2b')];
+    const r = modelo303Casillas(invoices, [], profile(), cfg, 1);
+    expect(box(allRows(r.groups), 120)!.cents).toBe(eurToCents(5000));
+    expect(r.notes.join(' ')).toMatch(/349/);
+  });
+});
+
+describe('Modelo 349 rows', () => {
+  it('lists EU B2B clients with base and clave S', () => {
+    const invoices = [
+      inv(2, 5000, 'eu_b2b'), // Q1, ACME
+      inv(3, 1500, 'eu_b2b'), // Q1, ACME (grouped)
+      inv(5, 2000, 'eu_b2b'), // Q2 → excluded from Q1
+      inv(2, 1000, 'domestic_es', 21), // excluded (not UE)
+      inv(2, 9000, 'non_eu_export'), // excluded (not UE)
+    ];
+    invoices[0].clientName = 'ACME GmbH';
+    invoices[1].clientName = 'ACME GmbH';
+    invoices[2].clientName = 'Otra UE';
+    const rows = modelo349Rows(invoices, profile(), 1);
+    expect(rows).toHaveLength(1); // only ACME in Q1; "Otra UE" is Q2
+    expect(rows[0].clientName).toBe('ACME GmbH');
+    expect(rows[0].clave).toBe('S');
+    expect(rows[0].baseCents).toBe(eurToCents(6500)); // 5000 + 1500 grouped
   });
 });
 

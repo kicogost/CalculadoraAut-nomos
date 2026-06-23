@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { centsToEur, formatEur, QUARTER_LABELS } from '../engine';
 import type { Expense, Invoice, TaxConfig, YearProfile } from '../engine';
-import { modelo130Casillas, modelo303Casillas, type Casilla, type ModeloCasillas } from '../lib/casillas';
+import { modelo130Casillas, modelo303Casillas, modelo349Rows, type Casilla, type ModeloCasillas } from '../lib/casillas';
 import { Badge, Card, InfoTip, cx } from './ui';
 import { currentMonthForYear } from '../lib/dates';
 
@@ -10,7 +10,7 @@ function formNumber(cents: number): string {
   return centsToEur(cents).toFixed(2).replace('.', ',');
 }
 
-type Model = '303' | '130';
+type Model = '303' | '130' | '349';
 
 export function CasillasView({
   invoices,
@@ -26,10 +26,14 @@ export function CasillasView({
   const [model, setModel] = useState<Model>('303');
   const [quarter, setQuarter] = useState(() => Math.ceil(currentMonthForYear(profile.year) / 3));
 
-  const data: ModeloCasillas =
+  const data: ModeloCasillas | null =
     model === '303'
       ? modelo303Casillas(invoices, expenses, profile, cfg, quarter)
-      : modelo130Casillas(invoices, expenses, profile, cfg, quarter);
+      : model === '130'
+        ? modelo130Casillas(invoices, expenses, profile, cfg, quarter)
+        : null;
+  const rows349 = model === '349' ? modelo349Rows(invoices, profile, quarter) : [];
+  const total349 = rows349.reduce((s, r) => s + r.baseCents, 0);
 
   return (
     <Card className="p-5">
@@ -43,8 +47,9 @@ export function CasillasView({
 
       <div className="mb-4 flex flex-wrap items-center gap-3">
         <div className="inline-flex rounded-xl bg-surface-2 p-1">
-          <Seg active={model === '303'} onClick={() => setModel('303')}>Modelo 303 (IVA)</Seg>
-          <Seg active={model === '130'} onClick={() => setModel('130')}>Modelo 130 (IRPF)</Seg>
+          <Seg active={model === '303'} onClick={() => setModel('303')}>303 (IVA)</Seg>
+          <Seg active={model === '130'} onClick={() => setModel('130')}>130 (IRPF)</Seg>
+          <Seg active={model === '349'} onClick={() => setModel('349')}>349 (UE)</Seg>
         </div>
         <div className="inline-flex rounded-xl bg-surface-2 p-1">
           {[1, 2, 3, 4].map((q) => (
@@ -53,34 +58,77 @@ export function CasillasView({
         </div>
       </div>
 
-      <div className="space-y-4">
-        {data.groups.map((g) => (
-          <div key={g.title}>
-            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted">{g.title}</div>
+      {data && (
+        <>
+          <div className="space-y-4">
+            {data.groups.map((g) => (
+              <div key={g.title}>
+                <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-muted">{g.title}</div>
+                <div className="overflow-hidden rounded-xl border border-border">
+                  <table className="w-full text-sm">
+                    <tbody>
+                      {g.rows.map((row) => (
+                        <Row key={row.n} row={row} />
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 flex items-center justify-between rounded-xl bg-accent-soft px-4 py-3">
+            <span className="text-sm font-medium text-ink">{data.resultLabel}</span>
+            <span className="font-mono text-lg font-semibold tnum text-ink">{formatEur(data.resultCents)}</span>
+          </div>
+
+          {data.notes.length > 0 && (
+            <ul className="mt-3 space-y-1">
+              {data.notes.map((n, i) => (
+                <li key={i} className="text-xs text-warn">⚠ {n}</li>
+              ))}
+            </ul>
+          )}
+        </>
+      )}
+
+      {model === '349' && (
+        rows349.length === 0 ? (
+          <p className="text-sm text-muted">No tienes operaciones intracomunitarias (clientes de la UE) este trimestre.</p>
+        ) : (
+          <div>
             <div className="overflow-hidden rounded-xl border border-border">
               <table className="w-full text-sm">
+                <thead className="bg-surface-2/60 text-left text-xs text-muted">
+                  <tr>
+                    <th className="px-3 py-2 font-medium">Cliente</th>
+                    <th className="px-3 py-2 font-medium">NIF-IVA</th>
+                    <th className="px-3 py-2 font-medium">Clave</th>
+                    <th className="px-3 py-2 text-right font-medium">Base</th>
+                  </tr>
+                </thead>
                 <tbody>
-                  {g.rows.map((row) => (
-                    <Row key={row.n} row={row} />
+                  {rows349.map((r) => (
+                    <tr key={r.clientName} className="border-t border-border">
+                      <td className="px-3 py-2 text-ink">{r.clientName}</td>
+                      <td className="px-3 py-2 text-muted">— (añádelo)</td>
+                      <td className="px-3 py-2"><Badge tone="neutral">{r.clave}</Badge></td>
+                      <td className="px-3 py-2 text-right font-mono tnum">{formatEur(r.baseCents)}</td>
+                    </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+            <div className="mt-4 flex items-center justify-between rounded-xl bg-accent-soft px-4 py-3">
+              <span className="text-sm font-medium text-ink">Total operaciones intracomunitarias</span>
+              <span className="font-mono text-lg font-semibold tnum text-ink">{formatEur(total349)}</span>
+            </div>
+            <p className="mt-3 text-xs text-warn">
+              ⚠ Clave S = prestaciones de servicios intracomunitarias. Añade el NIF-IVA de cada cliente
+              (no se guarda en los ingresos). Recuerda que tu propio NIF debe estar dado de alta en el ROI/VIES.
+            </p>
           </div>
-        ))}
-      </div>
-
-      <div className="mt-4 flex items-center justify-between rounded-xl bg-accent-soft px-4 py-3">
-        <span className="text-sm font-medium text-ink">{data.resultLabel}</span>
-        <span className="font-mono text-lg font-semibold tnum text-ink">{formatEur(data.resultCents)}</span>
-      </div>
-
-      {data.notes.length > 0 && (
-        <ul className="mt-3 space-y-1">
-          {data.notes.map((n, i) => (
-            <li key={i} className="text-xs text-warn">⚠ {n}</li>
-          ))}
-        </ul>
+        )
       )}
     </Card>
   );
