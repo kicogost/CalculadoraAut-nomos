@@ -48,14 +48,20 @@ See `supabase/schema.sql`. Mirrors the existing TypeScript types
 - **`entitlements`** is read-only to clients; only the Stripe webhook writes it
   (service-role key). Server endpoints re-check it before doing paid work.
 
-## Sync model (cloud source of truth + offline cache)
+## Sync model (decided: no offline mutation sync)
 
-- Logged in: write to IndexedDB immediately (instant UX) **and** upsert to Supabase.
-  On login, pull cloud → hydrate local. Per-row `updated_at` → last-write-wins
-  (sufficient for one user across devices).
-- Only `src/db/repo.ts` changes — gains a cloud-aware path when a session exists.
-  The engine and UI are untouched.
-- Logged out: IndexedDB only (still works offline; a "sign in to sync" nudge).
+Deliberately simple (agreed with the schema redesign — no offline-edit merge logic):
+
+- **Signed out:** IndexedDB only (anonymous local mode). Data can be lost on
+  cache-clear — acceptable because there's no free tier, so real use means signing up.
+- **Signed in:** **Supabase is the source of truth**, online required. Direct CRUD via
+  `supabase-js` (RLS-enforced). An IndexedDB read-cache for speed is fine, but writes
+  are write-through to Supabase — **no offline mutation queue, no last-write-wins.**
+- **On first signup/login:** one-time **local→cloud import** when the cloud account is
+  empty. On later logins, **cloud wins** and hydrates local. (Last-write-wins across
+  offline edits is intentionally *not* built — it loses data, the opposite of the goal.)
+- Only `src/db/repo.ts` gains a cloud-aware path when a session exists; engine + UI
+  untouched.
 
 ## Auth
 
@@ -65,17 +71,19 @@ deletion** (RGPD), and region note.
 
 ## Payments & entitlements
 
-1. "Hazte Pro / Verifactu" → `/api/checkout` creates a **Stripe Checkout** session
-   (one-time for Pro €49; subscription/annual for Verifactu €49/yr).
-2. Stripe **webhook** → `/api/stripe-webhook` verifies the signature and upserts
-   the `entitlements` row (service-role key bypasses RLS).
+1. Plan selection → `/api/checkout` creates a **Stripe Checkout** subscription
+   session (14-day trial, card required) for the chosen plan/interval.
+2. Stripe **webhook** → `/api/stripe-webhook` verifies the signature, dedupes via
+   `stripe_events`, and upserts the `entitlements` row (service-role key bypasses RLS).
 3. App reads `entitlements` for UI gating; **server functions re-verify** before
-   paid work (`verifactu-submit`, AI beyond credits). The valuable bit (AEAT
-   submission) is a server service → can't be pirated by editing client code.
+   paid work (bank sync, filing, AI beyond cap). The valuable bits are server
+   services → can't be pirated by editing client code.
 
-Pricing (see INSIGHTS.md §5): one-time **Pro €49** (power features) + **Verifactu
-€49/yr** (issuing + AEAT submission) + **AI reader credits** (cover token cost).
-Anchor marketing against the ~€840/yr gestor, not against other apps.
+**Pricing is decided in `docs/PRICING.md`** (the source of truth): no free tier,
+14-day card-required trial, **Core €89/yr** and **Automatización €199/yr** (monthly
+options too). Entitlements use `tier`/`subscription_status`/`tier_valid_until`; the
+legacy `pro_lifetime`/`verifactu_until` columns are unused (drop in a follow-up
+migration). Anchor marketing against the ~€840/yr gestor, not against other apps.
 
 ## Affiliates (compliant, not data-selling)
 
@@ -96,14 +104,14 @@ Optional opt-in lead-gen on top. See INSIGHTS.md.
 Free users cost ~€0.05–0.60/yr (small rows). Dormant signups ≠ MAU. The expensive
 resource (compute) is in the browser.
 
-## Unit economics (one-time Pro + annual Verifactu)
+## Unit economics
 
-- Pro €49 one-time → ~€47 margin, then ~€0.60/yr to serve.
-- Verifactu €49/yr → ~€47/yr recurring (funds AEAT-integration upkeep).
-- Healthy with organic CAC (~€0 via Reddit/SEO/community); need ~1–2% free→paid.
-- **Risk:** Verifactu submission is per-NIF → needs the user's digital certificate
-  or an apoderamiento. That's the hard build + support cost; it's why it's the
-  annual tier. Marginal per-submission cost ≈ €0.
+See `docs/UNIT-ECONOMICS.md` (full model) and `docs/PRICING.md` (decided prices).
+In short: cost-to-serve ≈ €0.30–0.50/user/mo (Core) and ≈ €1–2/user/mo
+(Automatización, bank-sync per-account fee is the swing); **Core €89/yr** grows
+organically, **Automatización €199/yr** clears LTV:CAC ≈ 4 so it can fund paid ads.
+Filing is **user-authorised with their own Cl@ve** (v1) → no apoderamiento licensing
+or per-submission liability.
 
 ## Environment variables
 
