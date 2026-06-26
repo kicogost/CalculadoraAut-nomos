@@ -32,6 +32,34 @@ karma/age/giveaway/survey restrictions.
 - Off-Reddit too: X/Twitter, LinkedIn, Facebook groups de autónomos, Discord/Slack de
   freelances, coworkings.
 
+## More channels (beyond Reddit) — best ICP fit first
+
+Go in **give-first and genuine**, not copy-pasting; each platform has its own etiquette.
+
+**Tier 1 — young & software-native (best fit)**
+- **Mediavida** — foros *Curro* (trabajo) y *Feda* (finanzas). Público joven y tech.
+- **X/Twitter** — responde a quien se queja de Hacienda/su gestor; #autónomos; hilo propio.
+- **Dev/indie-maker ES** — r/programacion, Indie Hackers, Discords/Slacks de devs (muchos freelancers = autónomos). Ángulo "builder en fase de research".
+- **LinkedIn** — post + DM a autónomos de 2º grado; comenta en posts de fiscalidad.
+
+**Tier 2 — volumen**
+- **Facebook Groups** — "Autónomos España", "Autónomos y Emprendedores", por sector.
+- **Telegram** — grupos/canales de emprendedores, freelance, indie hackers ES.
+- **Forocoches** — subforo Negocios/Economía. Alcance enorme, tono bruto (adapta registro).
+
+**Tier 3 — nicho por profesión (freelancers)**
+- Diseñadores (Domestika, Dribbble), marketers/copywriters, traductores (ProZ/ATRAE),
+  fotógrafos, makers no-code. **Malt** (marketplace freelance) para DMs a buenos perfiles.
+
+**Tier 4 — offline / máxima densidad ICP**
+- **Coworkings** (Impact Hub, Aticco, Utopicus, La Nave…) — escribe al community manager.
+- **Alumni de bootcamps** (Ironhack, Le Wagon, 4Geeks, Assembler) — recién graduados que
+  se hacen autónomos = ICP exacto. Pide postear en su Slack/grupo de alumni.
+
+> Reframe "attack" → estas comunidades castigan la extracción. Aporta valor, participa de
+> verdad, y deja el producto/sorteo para el DM (no el post). Registra el `Channel:` de cada
+> entrevista para saber cuál convierte mejor.
+
 ## Before you post (so it survives)
 1. **Read the subreddit rules**; many ban surveys/self-promo → message the mods first.
 2. Use an **aged account** that has commented genuinely in the sub before.
