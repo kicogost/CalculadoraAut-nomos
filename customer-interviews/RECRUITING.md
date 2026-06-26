@@ -29,21 +29,21 @@ and never spam the same text across subs the same day.
 **Título:** Soy autónomo y nunca sé cuánto voy a pagar a Hacienda — busco hablar 15 min con otros autónomos
 
 **Cuerpo:**
-> Hola a todos. Soy autónomo y, como muchos, vivo con la sensación de no enterarme del
-> todo de mis impuestos: cuánto apartar, cuánto me queda de verdad, si mi gestor lo
-> está haciendo bien…
+> Hola a todos.
 >
-> Estoy intentando entender a fondo cómo lleváis esto los demás (gestor, app, a mano…),
-> qué os funciona y qué os saca de quicio. **No vendo nada** — solo quiero aprender de
-> gente real antes de sacar conclusiones.
+> Soy autónomo y, como muchos, vivo con la sensación de no enterarme del todo de mis
+> impuestos…
 >
-> Busco autónomos (más o menos 20–35, cómodos con apps) que lleven sus impuestos con
-> gestor o con alguna herramienta y estén abiertos a cambiar si hubiera algo mejor.
-> Serían **15 minutos** por videollamada, cuando os venga bien. Si me dejáis, lo grabo
-> solo para mis notas (y lo borro cuando queráis).
+> Estoy intentando entender cómo lleváis esto los demás (gestor, app, a mano…), qué os
+> funciona y qué os saca de quicio.
 >
-> A cambio os cuento lo que vaya aprendiendo del resto (sin nombres). Si os apetece,
-> comentad o mandadme un DM. ¡Gracias!
+> Serían 15 minutos por videollamada. A cambio os cuento lo que vaya aprendiendo del
+> resto — y, como agradecimiento, **entre las 100 personas con las que hable sortearé
+> 100€**.
+>
+> DM o comentad. ¡Gracias!
+
+*(Recording consent is asked in the DM/screener, not in the post — see below.)*
 
 ## Post 2 — Pregunta a la comunidad (lower friction, also gives public data)
 
