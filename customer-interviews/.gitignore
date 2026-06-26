@@ -1,0 +1,10 @@
+# Raw recordings & full transcripts contain personal data — keep OUT of git.
+recordings/
+transcripts/
+*.mp3
+*.mp4
+*.m4a
+*.wav
+*.vtt
+*.srt
+# Commit only pseudonymised notes/ + synthesis. Keep emails out of the repo entirely.
