@@ -23,14 +23,24 @@ karma/age/giveaway/survey restrictions.
 > consent + Calendly **only in the DM/screener**. Filter-safe Post 1 body below omits
 > the raffle for that reason.
 
-## Where to post
-- **r/AutonomosES** — primary, exact audience (small but perfect). Check rules; DM mods
-  first (template below).
-- **r/spain**, **r/askspain** — bigger; stricter rules, keep it genuinely
-  conversational, not promo.
-- **r/SpainFinance**, **r/Emprendedores** (LATAM-leaning — caveat), **r/Freelance** (EN).
-- Off-Reddit too: X/Twitter, LinkedIn, Facebook groups de autónomos, Discord/Slack de
-  freelances, coworkings.
+## Where to post (subreddits)
+
+Spain has Spain-specific taxes → prioritise **Spain** subs; skip pure-LATAM ones
+(r/mexico, r/argentina…) — not ICP. Verify each exists + read its rules first.
+
+- **Autónomo / Spain core:** r/AutonomosES *(primary, small, DM mods first)*, r/autonomos,
+  r/spain, r/askspain, r/es, r/Spaniards.
+- **Finance / work / business:** r/SpainFinance, r/Bolsa, r/SpainEconomy,
+  r/Emprendedores *(LATAM-leaning — caveat)*, r/Trabajo_ES / r/empleo_ES *(check name)*.
+- **City subs (young, software-native — underrated):** r/Madrid, r/Barcelona, r/Valencia,
+  r/Sevilla, r/Malaga, r/Bilbao, r/Zaragoza, r/Granada — post as *"autónomos de [ciudad]…"*.
+- **Freelancer professions = ICP gold:** r/programacion (devs, many freelance),
+  r/diseñografico / r/DisenoGrafico, r/marketingdigital, r/fotografia *(check names)*;
+  r/freelance, r/forhire *(EN/global, lower fit)*.
+- **Expats/nomads in Spain (EN-speaking autónomos):** r/expats, r/digitalnomad,
+  r/GuiriMoney *(check)*.
+- **Off-Reddit too:** X/Twitter, LinkedIn, Facebook groups de autónomos, Mediavida,
+  Telegram, coworkings (see the channels section below).
 
 ## More channels (beyond Reddit) — best ICP fit first
 
