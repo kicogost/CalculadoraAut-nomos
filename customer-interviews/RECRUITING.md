@@ -4,6 +4,25 @@ Posts are in Spanish (ready to post). **Reddit rule #1: don't look like an ad.**
 product name, no links in the post, transparent about who you are, give value back,
 and never spam the same text across subs the same day.
 
+## If a post gets "removed by Reddit's filters"
+
+That's an **automated** removal (site-wide spam filter or the sub's AutoMod), not a
+human mod. Most common causes, in order:
+1. **Near-duplicate posts across subs in a short window** → looks like spam. Post **one
+   sub per day** and **vary the wording** a lot between subs.
+2. **New / low-karma / unverified account** → many subs auto-filter these. Verify email
+   and **warm up the account** (comment genuinely for a few days, gain karma) before
+   posting. Check shadowban: view your profile logged-out/incognito.
+3. **Giveaway/promo signals** (e.g. "sorteo 100€") → move the **reward to the DM**, not
+   the public post (see below).
+What to do: **don't keep reposting** (it hurts standing). **Modmail the sub** (template
+below) asking why it was filtered + to approve, and skim the rules/wiki for
+karma/age/giveaway/survey restrictions.
+
+> **Tip:** keep the public post clean and conversational; put the €100 raffle + recording
+> consent + Calendly **only in the DM/screener**. Filter-safe Post 1 body below omits
+> the raffle for that reason.
+
 ## Where to post
 - **r/AutonomosES** — primary, exact audience (small but perfect). Check rules; DM mods
   first (template below).
@@ -120,7 +139,9 @@ LATAM, no todos son autónomos en España.)*
 > ¡Gracias por escribir! Para cuadrar: ¿eres autónomo, más o menos de 20–35, y ahora
 > llevas los impuestos con gestor o con alguna app? Es una llamada de unos 15 min cuando
 > te venga bien. Te pediría permiso para grabarla solo para mis notas (privado, y la
-> borro cuando quieras). ¿Te va bien esta semana? Aquí tienes mi Calendly: [ENLACE]
+> borro cuando quieras). Y, como agradecimiento, **entre todas las personas con las que
+> hable (hasta 100) sortearé 100€**. ¿Te va bien esta semana? Aquí tienes mi Calendly:
+> [ENLACE]
 
 ## Comment reply (cuando responden en el hilo, no por DM)
 
