@@ -94,13 +94,12 @@ Go in **give-first and genuine**, not copy-pasting; each platform has its own et
 > Estoy intentando entender cómo lleváis esto los demás (gestor, app, a mano…), qué os
 > funciona y qué os saca de quicio.
 >
-> Serían 15 minutos por videollamada. A cambio os cuento lo que vaya aprendiendo del
-> resto — y, como agradecimiento, **entre las 100 personas con las que hable sortearé
-> 100€**.
+> Serían 15 minutos por videollamada, cuando os venga bien. A cambio os cuento lo que
+> vaya aprendiendo del resto.
 >
-> DM o comentad. ¡Gracias!
+> Comentad o mandadme un DM y os cuento más. ¡Gracias!
 
-*(Recording consent is asked in the DM/screener, not in the post — see below.)*
+*(Filter-safe: raffle + recording consent + Calendly go in the DM/screener, NOT the post.)*
 
 ## Post 2 — Pregunta a la comunidad (lower friction, also gives public data)
 
@@ -162,6 +161,78 @@ LATAM, no todos son autónomos en España.)*
 > 100€**.
 >
 > DM o comentad. ¡Gracias!
+
+## Posts for English / niche subs (raffle + consent only in DM)
+
+*All compliant: no product name, no links, no raffle in the body. r/expats,
+r/digitalnomad, r/freelance are strict on surveys/self-promo → **modmail first**.*
+
+**Post 6 — r/expats (EN)**
+> **Title:** Foreign autónomos in Spain — how do you stay on top of your taxes without it eating your life?
+>
+> I'm a foreigner who went autónomo in Spain, and honestly the tax side (IVA, IRPF, the
+> monthly "cuota", the year-end surprises) has been a maze — half the guidance online is
+> dense Spanish legalese.
+>
+> Trying to understand how other expat freelancers/autónomos here handle it: gestor, an
+> app, doing it yourself? What works, and what drives you mad?
+>
+> If anyone's up for a 15-min call to walk me through how you do it, I'd really
+> appreciate it — purely trying to learn, not selling anything. Comment or DM and I'll
+> share what I learn from others too. Thanks!
+
+**Post 7 — r/digitalnomad (EN)**
+> **Title:** Nomads who became autónomo in Spain: how do you handle the taxes?
+>
+> For those who've based themselves in Spain and registered as autónomo (or are on the
+> digital-nomad visa) — how are you managing the tax side? Between IVA, IRPF, the monthly
+> cuota and the year-end regularización, it's been a lot to get my head around.
+>
+> Curious what you use (gestor, an app, spreadsheets), what works, and what's a
+> nightmare. Happy to hop on a quick 15-min call if anyone's open to sharing how they do
+> it — just trying to learn, not selling anything. Comment or DM. Thanks!
+
+**Post 8 — r/GuiriMoney (EN, strongest fit)**
+> **Title:** Guiris who are autónomo in Spain — how do you know what to set aside and what you actually keep?
+>
+> Fellow guiri here, autónomo in Spain. The bit I still struggle with: knowing in real
+> time how much to set aside for Hacienda / Seguridad Social and what my actual take-home
+> is, without fully outsourcing my brain to a gestor.
+>
+> How do you all handle it — gestor, apps, DIY? What's worked, and what's been painful
+> (hello, year-end SS regularización)?
+>
+> If you're up for a 15-min call to tell me how you do it, I'd love that — genuinely
+> researching this, not selling anything. Comment or DM and I'll share what I learn.
+> Cheers!
+
+**Post 9 — r/freelance (EN, Spain-scoped)**
+> **Title:** Freelancers based in Spain: how do you handle taxes (and know your real net)?
+>
+> This one's specifically for freelancers in Spain (autónomos) — the tax setup here (IVA,
+> IRPF, the monthly Seguridad Social cuota, year-end adjustments) is its own beast.
+>
+> How do you manage it — a gestor, an app, your own spreadsheets? Do you actually know at
+> any point how much to set aside and what's left over, or is it a quarterly surprise?
+>
+> If any Spain-based freelancers are open to a 15-min call about how you do it, I'd really
+> appreciate it — just researching, not selling. Comment or DM and I'll share what I
+> learn from others.
+
+**Post 10 — r/programacion (ES, builder angle)**
+> **Título:** Devs freelance/autónomos en España: ¿cómo lleváis los impuestos sin volveros locos?
+>
+> Para los que sois autónomos en España (developers, freelance, etc.): ¿cómo gestionáis
+> la parte de impuestos? Entre IVA, IRPF, la cuota de autónomos y la regularización de
+> fin de año, a mí se me hace un mundo.
+>
+> Tengo curiosidad por saber qué usáis (gestor, alguna app, Excel), qué os funciona y qué
+> os saca de quicio. Y si en algún momento sabéis de verdad cuánto apartar y cuánto os
+> queda limpio, o os enteráis cada trimestre.
+>
+> Si a alguien le apetece contármelo en una llamada de 15 min, me ayudaría un montón —
+> es pura investigación, no vendo nada. Comentad o DM y os cuento lo que vaya aprendiendo
+> del resto. ¡Gracias!
 
 ---
 
