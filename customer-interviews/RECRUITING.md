@@ -26,7 +26,7 @@ and never spam the same text across subs the same day.
 
 ## Post 1 — Honest builder (for r/AutonomosES)
 
-**Título:** Soy autónomo y nunca sé cuánto voy a pagar a Hacienda — busco hablar 15 min con otros autónomos
+**Título:** Estoy harto de no saber cuánto voy a pagar a Hacienda y depender de mi asesor... Busco hablar 15 min con otros autónomos!
 
 **Cuerpo:**
 > Hola a todos.
@@ -81,6 +81,30 @@ and never spam the same text across subs the same day.
 > ¿Eres autónomo (20–35) y llevas tus impuestos con un gestor o una app? Estoy
 > investigando el tema (no vendo nada) y busco 15 min para que me cuentes cómo lo haces
 > y qué te frustra. A cambio te digo cuánto deberías apartar. ¿Te animas? DM 🙏
+
+## Post 5 — Ángulo finanzas (para r/SpainFinance)
+
+*Distinto enfoque que el Post 1: aquí el gancho es entender/optimizar los números, que
+encaja con un sub financiero. (También adaptable a r/Emprendedores, ojo: público
+LATAM, no todos son autónomos en España.)*
+
+**Título:** Autónomos: ¿sabéis en cada momento cuánto vais a pagar a Hacienda y cuánto os queda limpio de verdad?
+
+**Cuerpo:**
+> Una pregunta para los autónomos del sub (y de paso busco a unos cuantos para charlar):
+>
+> Me llama la atención lo difícil que es tener claro, mes a mes, cuánto hay que apartar
+> para IVA, IRPF y Seguridad Social, y cuál es el **beneficio neto real**. Entre el
+> gestor, las apps y el Excel, cada uno lo lleva de una forma.
+>
+> Estoy intentando entender cómo lo hacéis los que más os preocupáis por vuestras
+> finanzas: qué herramientas usáis, qué optimizáis y qué os sigue sacando de quicio.
+>
+> Serían 15 minutos por videollamada. A cambio os comparto lo que vaya aprendiendo del
+> resto — y, como agradecimiento, **entre las 100 personas con las que hable sortearé
+> 100€**.
+>
+> DM o comentad. ¡Gracias!
 
 ---
 
