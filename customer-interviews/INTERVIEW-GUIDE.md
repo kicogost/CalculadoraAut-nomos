@@ -69,9 +69,17 @@ the exact words they use for the pain.*
   qué precio te lo pensarías?"* — *get a range; note reaction, don't anchor.*
 - *"¿Qué tendría que hacer (o no hacer) una herramienta para que confiaras en ella con
   tus impuestos?"* — *trust = the real barrier to leaving a human gestor.*
+- **Trust probe (ask every time):** *"¿Confiarías en una app —en vez de en una persona—
+  para tus impuestos? ¿Qué tendría que hacer EXACTAMENTE para que te sintieras seguro?"*
+  — *the crux. Community signal: expats say "no way, get a gestor", and even a fellow
+  autónomo joked "¿esto es una trampa de Hacienda?". Probe what "seguro" means:
+  corrección garantizada, un humano de respaldo, que no se comparta con Hacienda…*
+- *"¿Tienes claro qué puedes y qué no puedes deducirte? ¿Te preocupa estar pagando de
+  más?"* — *deductions confusion + "me siento robado" is a recurring pain; maximising
+  legal deductions ("que no pagues de más") is a strong wedge.*
 
-*Listen for: € figures, the outcome they'd pay for (not features), trust requirements,
-deal-breakers.*
+*Listen for: € figures, the outcome they'd pay for (not features), trust requirements
+(human backup? guarantee? privacy from Hacienda?), deductions confusion, deal-breakers.*
 
 ## 5 · Concept reaction + waitlist + referrals (~2 min) — only now
 
