@@ -236,7 +236,23 @@ r/digitalnomad, r/freelance are strict on surveys/self-promo → **modmail first
 
 ---
 
-## Mensaje a los moderadores (pide permiso antes en subs estrictos)
+## Value-first reply + soft pilot offer (for *help* threads — not your own posts)
+
+When someone is **asking for help** (e.g. "consejos nuevo autónomo"), don't pitch — help.
+This is how you win first pilot users one by one.
+
+Structure:
+1. **Validate + answer their actual question, accurately** — the real value. Add one
+   **non-obvious tip** (e.g. W-8BEN for US-platform income, "303 even with no IVA") to
+   show you know your stuff.
+2. **Always add** *"confírmalo con Hacienda / un asesor"* on tax specifics — accuracy +
+   keeps you off the hook (you're guiding, not signing off on their taxes).
+3. **Soft, honest close:** *"justo estoy construyendo una herramienta para esto; si te
+   apetece te aviso cuando esté y la pruebas gratis como uno de los primeros."*
+
+Rules: don't lead with the product; only pitch if you genuinely helped. For these warm
+leads, **free early access beats the €100 raffle**. Be transparent you're the builder.
+Log them as `Channel: reddit-help-thread` so you can see which convert to pilots.
 
 > Hola, soy autónomo y estoy haciendo entrevistas de investigación (sin vender ni
 > promocionar ningún producto) para entender cómo los autónomos llevan sus impuestos.
