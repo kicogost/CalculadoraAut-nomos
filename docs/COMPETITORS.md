@@ -122,5 +122,28 @@ Trustpilot is solicited/curated. Sources + raw data: `tools/review-research/READ
 5. **Stay radically simple** — resist ERP/feature creep (Holded's trap). Judge every feature by `GESTOR-REPLACEMENT.md`'s effort test.
 6. **Transparent pricing, no hikes, no lock-in, fast human support** — bake into positioning; it counters the #1 universal complaint and the lock-in models.
 
+## Watchlist — emerging tools & builders (from community signal)
+
+Surfaced in the recruiting threads (`customer-interviews/community-signal/`). Logged
+because the space is actively crowding; not full profiles yet.
+
+- **Quantum Economics** — gestoría + client-portal platform: invoicing, OCR on received
+  invoices, a Power-BI-style dashboard (IVA/IRPF/IS per quarter), prepares 111/303/… +
+  Cuentas Anuales, and **presents to AEAT via the user's digital certificate** + DEHú
+  notifications. Sold to asesorías but usable by an end client with 1 SL. Most
+  full-featured tool seen so far (closest to "no gestor needed") — but **asesoría-first,
+  not autónomo-only/simple.** Worth a full profile.
+- **YourMatePat** — directory of **English-speaking** gestors/accountants (built by an
+  expat). Targets the expat trust+language gap (same segment as Renn).
+- **AphexIce (FOSS, in build)** — a free app that "does all this" + translates AEAT text;
+  builder noted *"many people are doing the same or similar."*
+- **GloPay** — freelancer invoicing + multi-currency payments + expenses, no company
+  needed (promoted in-thread).
+- **ChatGPT** — people literally dump their year into it for tax help. Free substitute →
+  our edge = structured, correct, Spain-specific, and it actually tracks/files.
+
+**Read:** the space is heating up and being researched by other builders too. Moat =
+**autónomo-only + dead-simple + the set-aside hook + privacy/trust**, not feature count.
+
 ## Methodology note
 Researched via parallel subagents (now web-enabled — see `.claude/settings.json` allowlisting `WebFetch`/`WebSearch`) **plus** massive-sample app-store scraping (`tools/review-research/`). For bigger samples on the web-first leaders, add Trustpilot/Capterra via API or a residential IP (datacenter IPs get 403) — see that tool's README. Add Billin, FacturaDirecta, Sage, or others here later using the same template.
