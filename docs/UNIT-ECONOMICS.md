@@ -46,6 +46,41 @@ sync is included.
 channels (SEO on "modelo 303/130", Reddit/community, referrals) are far cheaper —
 **CAC ~€0–20** — and are where a low price point survives.
 
+## 2b. Meta (FB/IG) acquisition — funnel detail
+
+Spanish Meta benchmarks: **CPM ~€4–10**, **CTR ~1–2%** → **CPC ~€0.40–€1.20** (Spain is
+cheaper than US/UK; finance-ish audiences sit higher). The friction is that cold Meta
+traffic is **low-intent** (nobody's searching) feeding a **card-required trial**.
+
+**Direct funnel: Meta → card-required trial → paid**
+
+| Stage | Poor | Mid | Good |
+|---|---|---|---|
+| CPC | €1.20 | €0.80 | €0.50 |
+| Click → trial (card) | 2% | 4% | 6% |
+| → cost / trial | €60 | €20 | €8 |
+| Trial → paid | 30% | 40% | 50% |
+| **CAC** | **~€200** | **~€50** | **~€17** |
+
+**Plan ~€70–€120 early**, dropping toward **€40–€70** once creative/targeting are tuned;
+the high end (€100–€150+) is normal before optimisation.
+
+**Lead-magnet funnel: Meta → free "cuánto apartar" calculator / waitlist → nurture → paid**
+- Cost / lead (free, low friction): **~€2–€6** · lead → paid (email + product): **~4–10%**
+  → **CAC ~€30–€120**, but with a cheap/measurable front end, more volume to learn from,
+  and an **owned email list** that lowers *effective* CAC over time. Doubles as the
+  launch waitlist → **the lower-risk way to use Meta.**
+
+**Viability (vs §3 LTV):** for LTV:CAC ≥ 3, keep CAC under ~**€70 (Core €89)** /
+~**€130 (Automatización €199)**. So Meta is **marginal for Core, workable for
+Automatización** — point ads at the premium/annual tier; keep Core organic-first.
+
+**Notes:** Meta's "autónomo/freelance" interest targeting is thin → win with **broad
+targeting + sharp creative** (reuse the "harto de no saber cuánto pagar a Hacienda"
+hook). iOS/ATT makes attribution fuzzy → track signups via UTMs + your own backend.
+**Retargeting** (site/waitlist visitors) is far cheaper than prospecting. Start
+€20–€50/day, optimise for trial/lead first, judge paid after ~15–30 conversions.
+
 ## 3. LTV at candidate price points
 
 Assume ~75% gross margin, ~3-year average lifetime (autónomos churn ~25–30%/yr — they
